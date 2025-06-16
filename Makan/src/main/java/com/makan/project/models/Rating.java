@@ -1,6 +1,15 @@
 package com.makan.project.models;
 
+
+import jakarta.persistence.*; // or use javax.persistence.* depending on your setup
+
+@Entity
+@Table(name = "ratings")
 public class Rating {
+	
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int venueId;
     private String userName;

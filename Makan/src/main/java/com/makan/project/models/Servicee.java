@@ -38,7 +38,7 @@ public class Servicee {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedAt;
 
-    @ManyToMany(mappedBy = "services")
+    @ManyToMany(mappedBy = "servicees")
     private List<Venue> venues;
 
 	public Servicee() {
