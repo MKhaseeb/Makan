@@ -44,12 +44,6 @@ public class Venue {
     @NotNull
     @Size(min = 2, max = 500, message = "Description must be between 2 and 500 characters")
     private String description;
-    @NotNull
-    @Min(value = 1, message = "Latitude must be at least 1")
-    private double latitude;
-    @NotNull
-    @Min(value = 1, message = "Longitude must be at least 1")
-    private double longitude;
 
     @Column(updatable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -68,20 +62,18 @@ public class Venue {
         joinColumns = @JoinColumn(name = "venue_id"),
         inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Service> services;
+    private List<Servicee> servicees;
 
 
     public Venue() {
     }
-    public Venue(String name, String city, double pricePerDay, int capacity, String imageUrl, String description, double latitude, double longitude) {
+    public Venue(String name, String city, double pricePerDay, int capacity, String imageUrl, String description) {
         this.name = name;
         this.city = city;
         this.pricePerDay = pricePerDay;
         this.capacity = capacity;
         this.imageUrl = imageUrl;
         this.description = description;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 
     public Date getCreatedAt() {
@@ -102,11 +94,11 @@ public class Venue {
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
-    public List<Service> getServices() {
-        return services;
+    public List<Servicee> getServices() {
+        return servicees;
     }
-    public void setServices(List<Service> services) {
-        this.services = services;
+    public void setServices(List<Servicee> services) {
+        this.servicees = services;
     }
     @PrePersist
     protected void onCreate() {
@@ -159,18 +151,6 @@ public class Venue {
     }
     public void setDescription(String description) {
         this.description = description;
-    }
-    public double getLatitude() {
-        return latitude;
-    }
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-    public double getLongitude() {
-        return longitude;
-    }
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
     
 
