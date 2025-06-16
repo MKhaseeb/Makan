@@ -1,0 +1,10 @@
+package com.makan.project.repositories;
+
+import java.util.Optional;
+import org.springframework.data.repository.CrudRepository;
+import com.makan.project.models.User;
+
+public interface UserRepositories extends CrudRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+
+}
