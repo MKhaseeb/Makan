@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class MakanController {
 	
-	@GetMapping("/")
+	@GetMapping("/makan")
 	public String index() {
 		return "index.jsp";
 	}
