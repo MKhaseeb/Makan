@@ -59,7 +59,6 @@ public class Rating {
         this.comment = comment;
     }
 
-    // ToString
     @Override
     public String toString() {
         return "Rating{" +
