@@ -58,9 +58,9 @@ public class Venue {
 
     @ManyToMany
     @JoinTable(
-        name = "venue_services",
+        name = "venue_servicees",
         joinColumns = @JoinColumn(name = "venue_id"),
-        inverseJoinColumns = @JoinColumn(name = "service_id")
+        inverseJoinColumns = @JoinColumn(name = "servicee_id")
     )
     private List<Servicee> servicees;
 

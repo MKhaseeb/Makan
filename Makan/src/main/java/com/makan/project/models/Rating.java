@@ -1,15 +1,16 @@
 package com.makan.project.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+
+
+import jakarta.persistence.*; // or use javax.persistence.* depending on your setup
 
 @Entity
-@Table(name = "ratings") // اسم الجدول في قاعدة البيانات (اختياري، يمكنك تغييره حسب الجدول لديك)
+@Table(name = "ratings")
 public class Rating {
+	
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "venue_id")
