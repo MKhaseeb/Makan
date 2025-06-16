@@ -1,6 +1,7 @@
 package com.makan.project.models;
 
 
+
 import jakarta.persistence.*; // or use javax.persistence.* depending on your setup
 
 @Entity
@@ -11,9 +12,15 @@ public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "venue_id")
     private int venueId;
+
+    @Column(name = "user_name")
     private String userName;
+
     private int score;
+
     private String comment;
 
     // Constructors
@@ -78,6 +85,4 @@ public class Rating {
                 ", comment='" + comment + '\'' +
                 '}';
     }
-
-
 }
