@@ -1,6 +1,7 @@
 package com.makan.project.models;
 
 import java.util.Date;
+
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,7 +21,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="services")
-public class Service {
+public class Servicee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -40,10 +41,10 @@ public class Service {
     @ManyToMany(mappedBy = "services")
     private List<Venue> venues;
 
-	public Service() {
+	public Servicee() {
     }
     
-    public Service(String name, double price) {
+    public Servicee(String name, double price) {
         this.name = name;
         this.price = price;
     }
