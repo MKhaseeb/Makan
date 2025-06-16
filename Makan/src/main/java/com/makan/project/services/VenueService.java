@@ -3,12 +3,12 @@ package com.makan.project.services;
 import org.springframework.stereotype.Service;
 
 import com.makan.project.models.Venue;
-import com.makan.project.repositories.VenueRepositories;
+import com.makan.project.repositories.VenueRepository;
 
 @Service
 public class VenueService {
-    private final VenueRepositories venueRepositories;
-    public VenueService(VenueRepositories venueRepositories) {
+    private final VenueRepository venueRepositories;
+    public VenueService(VenueRepository venueRepositories) {
         this.venueRepositories = venueRepositories;
     }
     public void addVenue(Venue venue) {
