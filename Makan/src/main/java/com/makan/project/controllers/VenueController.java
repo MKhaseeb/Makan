@@ -1,5 +1,7 @@
 package com.makan.project.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ public class VenueController {
 	
 	@GetMapping("/venue")
 	public String createVenue(@Valid @ModelAttribute("newVenue") Venue venue, BindingResult result, HttpSession session, Model model) {
+	
 		return"createVenue.jsp";
 	}
 	
@@ -35,7 +38,7 @@ public class VenueController {
         if (result.hasErrors()) {
             return "createVenue.jsp";
         }
-        
+        venueService.addVenue(venue);
         return"redirect:/venue";
 	}
 	
@@ -60,9 +63,9 @@ public class VenueController {
 
 	 
 	 @GetMapping("/homes")
-	 public String Home(HttpSession session) {
+	 public String Home(HttpSession session , Long id) {
 	    Long userId = (Long) session.getAttribute("userId");
-
+	    List<Venue> venue =  venueService.allVenue();
 		 if (userId == null) {
 	            return "redirect:/";
 	            }
