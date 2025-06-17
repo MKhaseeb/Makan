@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.makan.project.models.Venue;
@@ -84,6 +85,26 @@ public class VenueController {
 	     session.invalidate();
 	     return "redirect:/";
 	 }
+
+	@GetMapping("/halls/filter")
+	@ResponseBody
+	public List<Venue> filterVenuesAjax(
+			@RequestParam(required = false) String city,
+			@RequestParam(required = false) String search,
+			@RequestParam(required = false) Integer maxPrice,
+			@RequestParam(required = false) Integer minCapacity
+	) {
+		return venueService.filterVenues(city, search, maxPrice, minCapacity);
+	}
+	
+	@GetMapping("/halls/{id}")
+	public String showVenueDetails(@PathVariable Long id, Model model) {
+	    Venue venue = venueService.getVenueById(id);
+	    model.addAttribute("venue", venue);
+	    return "venueDetails.jsp";
+	}
+
+
 
 	 
 	 
