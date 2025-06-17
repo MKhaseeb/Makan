@@ -1,5 +1,7 @@
 package com.makan.project.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.makan.project.models.Venue;
@@ -16,6 +18,10 @@ public class VenueService {
     }
     public Venue getVenueById(Long id) {
         return venueRepositories.findById(id).orElse(null);
+    }
+    
+    public List<Venue> allVenue() {
+        return venueRepositories.findAll();
     }
     
 }
