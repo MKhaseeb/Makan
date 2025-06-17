@@ -34,6 +34,8 @@
 
 </head>
 
+
+
 <body class="min-h-screen flex flex-col">
 
 
@@ -43,13 +45,9 @@
 
 
 <main class="flex-grow">
-
     <div class="max-w-7xl mx-auto px-6 mt-8">
-
-        <input type="text" name="search" placeholder="🔍 بحث عن قاعة" 
-
-               class="w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-400" />
-
+     <input id="searchInput" type="text" name="search" placeholder="🔍 بحث عن قاعة" 
+       class="w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-400" />
     </div>
 
 
@@ -140,31 +138,21 @@
 
 
 
-        <div class="w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="w-2/3 flex flex-col gap-6">
 
-            <c:forEach var="venue" items="${venues}">
+<c:forEach var="venue" items="${venues}">
+    <a href="/halls/details?id=${venue.id}" class="block bg-white shadow rounded-xl overflow-hidden flex hover:shadow-lg transition-shadow duration-300">
+        <img src="${venue.imageUrl}" alt="${venue.name}" class="w-48 h-48 object-cover flex-shrink-0" />
+        <div class="p-4 flex flex-col justify-center text-right">
+            <h3 class="text-lg font-bold mb-1">${venue.name}</h3>
+            <p class="text-gray-600 mb-1">المدينة: ${venue.city}</p>
+            <p class="text-gray-600 mb-1">الوصف: ${venue.description}</p>
+            <p class="text-gray-600 mb-1">السعر: ${venue.pricePerDay} شيكل</p>
+            <p class="text-gray-600">السعة: ${venue.capacity} شخص</p>
+        </div>
+    </a>
+</c:forEach>
 
-                <div class="bg-white shadow rounded-xl overflow-hidden">
-
-                    <img src="${venue.imageUrl}" alt="${venue.name}" class="w-full h-48 object-cover">
-
-                    <div class="p-4">
-
-                        <h3 class="text-lg font-bold mb-1">${venue.name}</h3>
-
-                        <p class="text-gray-600 mb-1">المدينة: ${venue.city}</p>
-
-                        <p class="text-gray-600 mb-1">الوصف: ${venue.description}</p>
-
-                        <p class="text-gray-600 mb-1">السعر: ${venue.pricePerDay} شيكل</p>
-
-                        <p class="text-gray-600">السعة: ${venue.capacity} شخص</p>
-
-                    </div>
-
-                </div>
-
-            </c:forEach>
 
         </div>
 
@@ -172,13 +160,7 @@
 
 </main>
 
-
-
-
-
 <jsp:include page="footer.jsp" />
-
-
 
 </body>
 

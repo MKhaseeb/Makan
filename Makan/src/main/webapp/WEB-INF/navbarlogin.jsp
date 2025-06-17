@@ -112,6 +112,8 @@
 <header class="sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <h1 id="site-title" class="select-none cursor-default">قاعتي</h1>
+          <a href="/venue" tabindex="0">إضافة قاعة</a>
+    
     <nav class="flex items-center gap-8 font-medium">
       <form action="/venue/logout" method="post">
         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300">

@@ -40,7 +40,7 @@ public class Venue {
     @Min(value = 1, message = "Capacity must be at least 1")
     private int capacity;
     
-    @Size(min = 2, max = 255, message = "Image URL must be between 2 and 255 characters")
+    @Column(nullable = false)
     private String imageUrl;
     @NotNull
     @Size(min = 2, max = 500, message = "Description must be between 2 and 500 characters")
