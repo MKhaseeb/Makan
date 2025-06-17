@@ -142,23 +142,23 @@
 
         <div class="w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <c:forEach var="hall" items="${halls}">
+            <c:forEach var="venue" items="${venues}">
 
                 <div class="bg-white shadow rounded-xl overflow-hidden">
 
-                    <img src="${hall.imageUrl}" alt="${hall.name}" class="w-full h-48 object-cover">
+                    <img src="${venue.imageUrl}" alt="${venue.name}" class="w-full h-48 object-cover">
 
                     <div class="p-4">
 
-                        <h3 class="text-lg font-bold mb-1">${hall.name}</h3>
+                        <h3 class="text-lg font-bold mb-1">${venue.name}</h3>
 
-                        <p class="text-gray-600 mb-1">المدينة: ${hall.city}</p>
+                        <p class="text-gray-600 mb-1">المدينة: ${venue.city}</p>
 
-                        <p class="text-gray-600 mb-1">القرية: ${hall.village}</p>
+                        <p class="text-gray-600 mb-1">الوصف: ${venue.description}</p>
 
-                        <p class="text-gray-600 mb-1">السعر: ${hall.price} شيكل</p>
+                        <p class="text-gray-600 mb-1">السعر: ${venue.pricePerDay} شيكل</p>
 
-                        <p class="text-gray-600">السعة: ${hall.capacity} شخص</p>
+                        <p class="text-gray-600">السعة: ${venue.capacity} شخص</p>
 
                     </div>
 

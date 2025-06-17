@@ -63,9 +63,10 @@ public class VenueController {
 
 	 
 	 @GetMapping("/homes")
-	 public String Home(HttpSession session , Long id) {
+	 public String Home(HttpSession session , Long id , Model model ) {
 	    Long userId = (Long) session.getAttribute("userId");
-	    List<Venue> venue =  venueService.allVenue();
+	    List<Venue> venues =  venueService.allVenue();
+	    model.addAttribute("venues", venues);
 		 if (userId == null) {
 	            return "redirect:/";
 	            }
