@@ -71,50 +71,6 @@ public class VenueController {
         venueService.addVenue(venue);
         return "redirect:/homes";
     }
-//    @PostMapping("/venue/new")
-//    public String newVenue(@Valid @ModelAttribute("newVenue") Venue venue,
-//                           BindingResult result,
-//                           @RequestParam("files") List<MultipartFile> files,
-//                           HttpSession session,
-//                           Model model) {
-//        if (result.hasErrors()) {
-//            return "createVenue.jsp";
-//        }
-//
-//        List<String> imageUrls = new ArrayList<>();
-//
-//        try {
-//            if (files != null && !files.isEmpty()) {
-//                for (MultipartFile file : files) {
-//                    if (!file.isEmpty()) {
-//                        String fileName = file.getOriginalFilename();
-//                        String uploadDir = "src/main/resources/static/uploads/";
-//                        Path filePath = Paths.get(uploadDir + fileName);
-//                        Files.write(filePath, file.getBytes());
-//                        imageUrls.add("/uploads/" + fileName);
-//                    }
-//                }
-//                if (imageUrls.isEmpty()) {
-//                    result.rejectValue("imageUrl", "error.venue", "يجب رفع صورة واحدة على الأقل");
-//                    return "createVenue.jsp";
-//                }
-//            } else {
-//                result.rejectValue("imageUrl", "error.venue", "يجب رفع صورة واحدة على الأقل");
-//                return "createVenue.jsp";
-//            }
-//        } catch (IOException e) {
-//            result.rejectValue("imageUrl", "error.venue", "فشل رفع الصور");
-//            return "createVenue.jsp";
-//        }
-//
-//        // خزن أول صورة فقط في الحقل imageUrl
-//        venue.setImageUrl(imageUrls.get(0));
-//
-//        venueService.addVenue(venue);
-//        return "redirect:/homes";
-//    }
-
-
 
 
     // صفحة من نحن
