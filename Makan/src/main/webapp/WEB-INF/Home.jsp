@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -94,10 +95,10 @@
 
 <!-- قائمة القاعات -->
 <section class="max-w-7xl mx-auto mt-10 p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    <%-- مثال ثابت، يمكن استبداله ببيانات ديناميكية من السيرفلت أو قاعدة بيانات --%>
+    مثال ثابت، يمكن استبداله ببيانات ديناميكية من السيرفلت أو قاعدة بيانات
     <c:set var="halls" value="${pageContext.request.getAttribute("halls")}" />
     
-    <%-- مثال ثابت للقاعات --%>
+    مثال ثابت للقاعات
     <div class="bg-white rounded-lg shadow-md overflow-hidden" data-city="غزة" data-capacity="100" data-price="medium" data-name="قاعة النخيل">
         <img src="https://cdn.pixabay.com/photo/2017/01/20/00/30/hall-1992690_1280.jpg" alt="قاعة النخيل" loading="lazy" />
         <div class="p-4">
