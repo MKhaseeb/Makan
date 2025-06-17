@@ -35,4 +35,35 @@ public class VenueController {
         
         return"redirect:/venue";
 	}
+	
+
+	
+	 @GetMapping("/about")
+	    public String aboutPage() {
+	        return "Aboutus.jsp";
+	    }
+	 
+	 
+	 @GetMapping("/terms")
+	 public String index() {
+	     return "terms.jsp";
+	 }
+
+	 @GetMapping("/contactus")
+	 public String contant() {
+	     return "contact.jsp";
+	 }
+	 
+	 @GetMapping("/login")
+	 public String login() {
+	     return "login.jsp";
+	 }
+	 
+	 @GetMapping("/homes")
+	 public String Home() {
+	     return "Home.jsp";
+	 }
+	 
+	 
+
 }
