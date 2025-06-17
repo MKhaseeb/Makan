@@ -12,6 +12,7 @@ import com.makan.project.repositories.VenueRepository;
 @Service
 public class VenueService {
     private final VenueRepository venueRepositories;
+    
     public VenueService(VenueRepository venueRepositories) {
         this.venueRepositories = venueRepositories;
     }
@@ -24,6 +25,15 @@ public class VenueService {
     
     public List<Venue> allVenue() {
         return venueRepositories.findAll();
+    }
+    public List<Venue> searchByKeyword(String keyword) {
+    	return venueRepositories.findByNameContainingIgnoreCaseOrCityContainingIgnoreCase(keyword, keyword);
+    }
+    public List<Venue> searchByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return venueRepositories.findAll(); // ممكن ترجع كل القاعات إذا الاسم فارغ
+        }
+        return venueRepositories.findByNameContainingIgnoreCase(name.trim());
     }
     
     public List<Venue> filterVenues(String city, String search, Integer maxPrice, Integer minCapacity) {

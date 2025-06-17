@@ -4,13 +4,20 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+
+import org.springframework.stereotype.Repository;
+
 import org.springframework.data.repository.query.Param;
 
-import com.makan.project.models.Venue;
 
+import com.makan.project.models.Venue;
+@Repository
 public interface VenueRepository extends CrudRepository<Venue, Long> {
     List<Venue> findByNameContainingIgnoreCase(String name);
 	List<Venue> findAll();
+
+	List<Venue> findByNameContainingIgnoreCaseOrCityContainingIgnoreCase(String name, String city);
+
 
     @Query("SELECT v FROM Venue v " +
         "WHERE (:city IS NULL OR v.city = :city) " +

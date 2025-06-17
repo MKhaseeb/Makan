@@ -1,102 +1,66 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ page import = "java.text.SimpleDateFormat" %>
-<%@ page isErrorPage="true"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
-<html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8" />
+    <title>إضافة قاعة جديدة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-            <form:form action="venue/new" method="post" modelAttribute="newVenue" class="needs-validation">
-                        <div class="form-group">
-                            <form:label path="name" cssClass="form-label">اسم</form:label>
-                            <form:input path="name" cssClass="form-control"/>
-                            <form:errors path="name" cssClass="text-danger"/>
-                        </div>
-                        
-                        <div class="form-group">
-                            <form:label path="city" cssClass="form-label">مدينة</form:label>
-                            <form:input path="city" cssClass="form-control"/>
-                            <form:errors path="city" cssClass="text-danger"/>
-                        </div>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
-                        <div class="form-group">
-                            <form:label path="pricePerDay" cssClass="form-label">السعر ليوم واحد</form:label>
-                            <form:input type="number"  path="pricePerDay" cssClass="form-control"/>
-                            <form:errors path="pricePerDay" cssClass="text-danger"/>
-                        </div>
+    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-8">
+        <h1 class="text-2xl font-semibold mb-6 text-gray-800 text-center">إضافة قاعة</h1>
 
-                        <div class="form-group">
-                            <form:label path="capacity" cssClass="form-label">السعة</form:label>
-                            <form:input type="number" path="capacity" cssClass="form-control"/>
-                            <form:errors path="capacity" cssClass="text-danger"/>
-                        </div>
+        <form:form action="/venue/new" method="post" modelAttribute="newVenue" enctype="multipart/form-data" class="space-y-5">
+            
+            <div>
+                <label class="block mb-1 font-medium text-gray-700">الاسم:</label>
+                <form:input path="name" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <form:errors path="name" cssClass="text-red-600 text-sm mt-1" />
+            </div>
 
-                        <div class="form-group">
-                            <form:label path="description" cssClass="form-label">التفاصيل</form:label>
-                            <form:input path="description" cssClass="form-control"/>
-                            <form:errors path="description" cssClass="text-danger"/>
-                        </div>
-                        
-                        <div class="form-group">
-    						<label for="fileInput">Upload Image</label>
-    						<input type="file" id="fileInput" class="form-control">
-    						<small id="uploadStatus" class="text-muted"></small>
-						</div>
-                        
-                        <form:input path="imageUrl" cssClass="form-control" id="imageUrl" type="hidden" />
-                        
-                        <img id="imagePreview" src="" alt="Image Preview" style="max-width:200px; display:none;" />
-                        
-               
+            <div>
+                <label class="block mb-1 font-medium text-gray-700">المدينة:</label>
+                <form:input path="city" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <form:errors path="city" cssClass="text-red-600 text-sm mt-1" />
+            </div>
 
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-success">انشاء</button>
-                        </div>
-                        </form:form>
-                        
-                        <div class="form-group">
-    <label>Image Preview</label>
-    <img id="previewImage" src="" alt="Image will appear here" style="max-width: 300px; display: none;" />
-</div>
-                        
-                        
-                        <script>
-document.getElementById("fileInput").addEventListener("change", function () {
-    const file = this.files[0];
-    if (!file) return;
+            <div>
+                <label class="block mb-1 font-medium text-gray-700">السعر اليومي:</label>
+                <form:input path="pricePerDay" type="number" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <form:errors path="pricePerDay" cssClass="text-red-600 text-sm mt-1" />
+            </div>
 
-    const formData = new FormData();
-    formData.append("file", file);
+            <div>
+                <label class="block mb-1 font-medium text-gray-700">السعة:</label>
+                <form:input path="capacity" type="number" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <form:errors path="capacity" cssClass="text-red-600 text-sm mt-1" />
+            </div>
 
-    const status = document.getElementById("uploadStatus");
-    status.textContent = "Uploading...";
+            <div>
+                <label class="block mb-1 font-medium text-gray-700">الوصف:</label>
+                <form:textarea path="description" rows="4" cssClass="w-full border border-gray-300 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <form:errors path="description" cssClass="text-red-600 text-sm mt-1" />
+            </div>
 
-    fetch("/upload", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.text())
-.then(url => {
-    document.getElementById("imageUrl").value = url;
-    const preview = document.getElementById("imagePreview");
-    preview.src = url;
-    preview.style.display = 'block';
-    status.textContent = "Image uploaded successfully.";
-})
+            <div>
+                <label class="block mb-1 font-medium text-gray-700">الصورة:</label>
+                <input type="file" name="file" class="w-full text-gray-700" />
+                <c:if test="${not empty error}">
+                    <p class="text-red-600 mt-1">${error}</p>
+                </c:if>
+            </div>
 
-    .catch(error => {
-        console.error("Upload failed:", error);
-        status.textContent = "Failed to upload image.";
-    });
-    
-});
-</script>
-                        
+            <div class="text-center">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded transition duration-300">
+                    إضافة
+                </button>
+            </div>
+
+        </form:form>
+    </div>
 
 </body>
 </html>
