@@ -79,5 +79,13 @@ public class VenueController {
 	 }
 	 
 	 
+	 @PostMapping("/venue/logout")
+	 public String logout(HttpSession session) {
+	     session.invalidate();
+	     return "redirect:/";
+	 }
+
+	 
+	 
 
 }
