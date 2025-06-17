@@ -26,11 +26,11 @@ public class LoginController {
 	 @Autowired
 	 LogRegService logRegService;
 	 
-	    @GetMapping("/")
+	    @GetMapping("/login")
 	    public String index(Model model) {
 	        model.addAttribute("newUser", new User());
 	        model.addAttribute("newLogin", new LoginUser());
-	        return "index.jsp";
+	        return "login.jsp";
 	    }
 	    
 	    @PostMapping("/register")
@@ -40,15 +40,15 @@ public class LoginController {
 	        
 	        if(result.hasErrors()) {
 	            model.addAttribute("newLogin", new LoginUser());
-	            return "index.jsp";
+	            return "login.jsp";
 	        }
 	        
 	        session.setAttribute("userId", reg.getId());
 	    
-	        return "redirect:/";
+	        return "redirect:/homes";
 	    }
 	    
-	    @PostMapping("/login")
+	    @PostMapping("/loginUser")
 	    public String login(@Valid @ModelAttribute("newLogin") LoginUser newLogin, 
 	            BindingResult result, Model model, HttpSession session) {
 	        
@@ -56,14 +56,14 @@ public class LoginController {
 	    
 	        if(result.hasErrors()) {
 	            model.addAttribute("newUser", new User());
-	            return "index.jsp";
+	            return "login.jsp";
 	        }
 	    
 	        session.setAttribute("userName", user.getFirstname());
 	        session.setAttribute("userId", user.getId());
 
 	    
-	        return "redirect:/home";
+	        return "redirect:/homes";
 	    }
 	    
 	    @GetMapping("/home")
@@ -71,11 +71,11 @@ public class LoginController {
 	        Long userId = (Long) session.getAttribute("userId");
 	        
 	        if (userId == null) {
-	            return "redirect:/";
+	            return "redirect:/homes";
 	            }
 	        User loguser = logRegService.findUserById(userId);
 	        model.addAttribute("user", loguser);
-	    	return"home.jsp";
+	    	return"login.jsp";
 	    }
 	    
 	    @GetMapping("/logout")
@@ -83,7 +83,5 @@ public class LoginController {
 	        session.invalidate();
 	        return "redirect:/";  
 	    }
-	    
-	 
 
 }

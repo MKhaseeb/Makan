@@ -1,5 +1,6 @@
 package com.makan.project.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.makan.project.models.Servicee;
@@ -7,14 +8,13 @@ import com.makan.project.repositories.ServiceeRepository;
 
 @Service
 public class ServiceeService {
-    private final ServiceeRepository serviceRepositories;
+	@Autowired
+	ServiceeRepository serviceeRepository;
 
-    public ServiceeService(ServiceeRepository serviceRepositories) {
-        this.serviceRepositories = serviceRepositories;
-    }
+
     public void addService(Servicee service) {
 
-        serviceRepositories.save(service);
+    	serviceeRepository.save(service);
     }
     
 

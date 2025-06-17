@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.makan.project.models.Venue;
+import com.makan.project.services.LogRegService;
 import com.makan.project.services.VenueService;
 
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +21,8 @@ public class VenueController {
 	
 	@Autowired
 	VenueService venueService;
+	@Autowired
+	LogRegService logRegService;
 	
 	
 	@GetMapping("/venue")
@@ -54,14 +57,21 @@ public class VenueController {
 	     return "contact.jsp";
 	 }
 	 
-	 @GetMapping("/login")
-	 public String login() {
-	     return "login.jsp";
-	 }
+
 	 
 	 @GetMapping("/homes")
-	 public String Home() {
+	 public String Home(HttpSession session) {
+	    Long userId = (Long) session.getAttribute("userId");
+
+		 if (userId == null) {
+	            return "redirect:/";
+	            }
 	     return "Home.jsp";
+	 }
+	 
+	 @GetMapping("/")
+	 public String main() {
+		 return"index.jsp";
 	 }
 	 
 	 
