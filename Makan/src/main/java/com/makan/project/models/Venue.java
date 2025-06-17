@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -53,6 +54,18 @@ public class Venue {
     private Date updatedAt;
 
 
+    public List<Servicee> getServicees() {
+        return servicees;
+    }
+    public void setServicees(List<Servicee> servicees) {
+        this.servicees = servicees;
+    }
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
     @OneToMany(mappedBy = "venue")
     private List<Booking> bookings;
 
@@ -63,6 +76,10 @@ public class Venue {
         inverseJoinColumns = @JoinColumn(name = "servicee_id")
     )
     private List<Servicee> servicees;
+
+    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
+    private List<Rating> ratings;
+
 
 
     public Venue() {
