@@ -5,26 +5,133 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <title>تفاصيل القاعة - ${venue.name}</title>
+    <title>${venue.name} - قاعتي</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #fdfcf9;
+        }
+    </style>
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
 </head>
-<body class="min-h-screen bg-gray-50 font-sans p-8">
+<body class="min-h-screen flex flex-col">
 
 <jsp:include page="navbarlogin.jsp" />
 
-<div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg">
-    <img src="${venue.imageUrl}" alt="${venue.name}" class="w-full h-64 object-cover rounded-md mb-6" />
-    <h1 class="text-3xl font-bold mb-4">${venue.name}</h1>
-    <p class="mb-2"><strong>المدينة:</strong> ${venue.city}</p>
-    <p class="mb-2"><strong>القرية:</strong> ${venue.village}</p>
-    <p class="mb-2"><strong>الوصف:</strong> ${venue.description}</p>
-    <p class="mb-2"><strong>السعر لكل يوم:</strong> ${venue.pricePerDay} شيكل</p>
-    <p class="mb-2"><strong>السعة:</strong> ${venue.capacity} شخص</p>
+<main class="flex-grow">
 
-    <a href="/halls" class="inline-block mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">العودة لصفحة البحث</a>
-</div>
+    <!-- Hero Image -->
+    <section class="w-full h-[600px] overflow-hidden">
+        <img src="${venue.imageUrl}" alt="${venue.name}" class="w-full h-full object-cover">
+    </section>
+
+    <!-- Venue Title and Action Buttons -->
+    <section class="px-6 py-8 max-w-7xl mx-auto">
+        <h1 class="text-4xl font-bold text-gray-800 mb-6">${venue.name}</h1>
+
+        <div class="flex flex-wrap gap-4 mb-8">
+            <button class="tabBtn bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md" data-tab="description">الوصف</button>
+            <button class="tabBtn bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md" data-tab="schedule">المواعيد</button>
+            <button class="tabBtn bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md" data-tab="pricing">الأسعار</button>
+        </div>
+
+        <!-- Description Only -->
+        <div id="description" class="tabContent">
+            <h2 class="text-xl font-semibold mb-2">الوصف:</h2>
+            <p class="text-gray-700 leading-relaxed">${venue.description}</p>
+        </div>
+
+        <!-- Schedule Tab with Calendar -->
+        <div id="schedule" class="tabContent hidden">
+            <h2 class="text-xl font-semibold mb-2">المواعيد المتاحة:</h2>
+            
+            <!-- Calendar Container -->
+            <div id="calendar" class="mt-6 bg-white rounded shadow p-4"></div>
+        </div>
+
+        <!-- Pricing Tab -->
+        <div id="pricing" class="tabContent hidden">
+            <h2 class="text-xl font-semibold mb-2">الأسعار:</h2>
+            <p class="text-gray-700 mb-1">السعر اليومي: ${venue.pricePerDay} شيكل</p>
+            <p class="text-gray-600">تخصيص الأسعار حسب اليوم أو المناسبة متاح عند الطلب.</p>
+        </div>
+
+        <!-- Booking Button -->
+        <div class="mt-10">
+            <a href="/booking/${venue.id}" 
+               class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-md text-lg shadow">
+                احجز الآن
+            </a>
+        </div>
+        
+    </section>
+</main>
 
 <jsp:include page="footer.jsp" />
+
+<!-- Tabs Script -->
+<script>
+    const tabBtns = document.querySelectorAll('.tabBtn');
+    const tabContents = document.querySelectorAll('.tabContent');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Reset button styles
+            tabBtns.forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white');
+                b.classList.add('bg-gray-200', 'text-gray-800');
+            });
+            btn.classList.remove('bg-gray-200', 'text-gray-800');
+            btn.classList.add('bg-blue-600', 'text-white');
+
+            // Show selected tab
+            tabContents.forEach(content => content.classList.add('hidden'));
+            document.getElementById(btn.getAttribute('data-tab')).classList.remove('hidden');
+        });
+    });
+</script>
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Parse booked dates passed from server into JS array
+        const bookedDates = [
+            <c:forEach var="date" items="${bookedDates}">
+                "${date}",
+            </c:forEach>
+        ];
+
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            height: 500,
+            locale: 'ar',
+            firstDay: 6, // Saturday as first day (adjust if needed)
+            selectable: true,
+            events: bookedDates.map(date => ({
+                title: 'محجوز',
+                start: date,
+                display: 'background',
+                color: '#fca5a5' // light red background for booked days
+            })),
+            dateClick: function(info) {
+                if (!bookedDates.includes(info.dateStr)) {
+                    // Redirect to booking page with date query param
+                    window.location.href = '/booking/${venue.id}?date=' + info.dateStr;
+                } else {
+                    alert('هذا التاريخ محجوز بالفعل.');
+                }
+            }
+        });
+
+        calendar.render();
+    });
+</script>
 
 </body>
 </html>

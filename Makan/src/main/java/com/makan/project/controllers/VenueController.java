@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.makan.project.models.Venue;
+import com.makan.project.services.BookingService;
 import com.makan.project.services.LogRegService;
 import com.makan.project.services.VenueService;
 
@@ -34,6 +37,9 @@ public class VenueController {
 
     @Autowired
     LogRegService logRegService;
+    
+    @Autowired
+     BookingService bookingService;
 
     // صفحة إنشاء القاعة
     @GetMapping("/venue")
@@ -117,5 +123,19 @@ public class VenueController {
         return "redirect:/";
     }
     
+    @GetMapping("/halls/{id}")
+    public String VenueDetails(@PathVariable Long id, Model model) {
+        Venue venue = venueService.getVenueById(id); 
+        List<LocalDate> bookedDates = bookingService.getBookedDatesForVenue(id); 
+
+        model.addAttribute("venue", venue);
+        model.addAttribute("bookedDates", bookedDates);
+
+        return "hallDetails.jsp";
+    }
+
+    
+
+
     
 }
