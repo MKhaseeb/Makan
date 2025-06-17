@@ -17,7 +17,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import com.makan.project.models.Venue;
 import com.makan.project.services.LogRegService;
@@ -69,51 +73,9 @@ public class VenueController {
         }
 
         venueService.addVenue(venue);
+
         return "redirect:/homes";
     }
-//    @PostMapping("/venue/new")
-//    public String newVenue(@Valid @ModelAttribute("newVenue") Venue venue,
-//                           BindingResult result,
-//                           @RequestParam("files") List<MultipartFile> files,
-//                           HttpSession session,
-//                           Model model) {
-//        if (result.hasErrors()) {
-//            return "createVenue.jsp";
-//        }
-//
-//        List<String> imageUrls = new ArrayList<>();
-//
-//        try {
-//            if (files != null && !files.isEmpty()) {
-//                for (MultipartFile file : files) {
-//                    if (!file.isEmpty()) {
-//                        String fileName = file.getOriginalFilename();
-//                        String uploadDir = "src/main/resources/static/uploads/";
-//                        Path filePath = Paths.get(uploadDir + fileName);
-//                        Files.write(filePath, file.getBytes());
-//                        imageUrls.add("/uploads/" + fileName);
-//                    }
-//                }
-//                if (imageUrls.isEmpty()) {
-//                    result.rejectValue("imageUrl", "error.venue", "يجب رفع صورة واحدة على الأقل");
-//                    return "createVenue.jsp";
-//                }
-//            } else {
-//                result.rejectValue("imageUrl", "error.venue", "يجب رفع صورة واحدة على الأقل");
-//                return "createVenue.jsp";
-//            }
-//        } catch (IOException e) {
-//            result.rejectValue("imageUrl", "error.venue", "فشل رفع الصور");
-//            return "createVenue.jsp";
-//        }
-//
-//        // خزن أول صورة فقط في الحقل imageUrl
-//        venue.setImageUrl(imageUrls.get(0));
-//
-//        venueService.addVenue(venue);
-//        return "redirect:/homes";
-//    }
-
 
 
 
@@ -153,6 +115,66 @@ public class VenueController {
     public String main() {
         return "index.jsp";
     }
+=======
+        return"redirect:/venue";
+	}
+	
+
+	
+	 @GetMapping("/about")
+	    public String aboutPage() {
+	        return "Aboutus.jsp";
+	    }
+	 
+	 
+	 @GetMapping("/terms")
+	 public String index() {
+	     return "terms.jsp";
+	 }
+
+	 @GetMapping("/contactus")
+	 public String contant() {
+	     return "contact.jsp";
+	 }
+	 
+
+	 
+	 @GetMapping("/homes")
+	 public String Home(HttpSession session , Long id , Model model ) {
+	    Long userId = (Long) session.getAttribute("userId");
+	    List<Venue> venues =  venueService.allVenue();
+	    model.addAttribute("venues", venues);
+		 if (userId == null) {
+	            return "redirect:/";
+	            }
+	     return "Home.jsp";
+	 }
+	 
+	 @GetMapping("/")
+	 public String main() {
+		 return"index.jsp";
+	 }
+	 
+	 
+	 @PostMapping("/venue/logout")
+	 public String logout(HttpSession session) {
+	     session.invalidate();
+	     return "redirect:/";
+	 }
+	@GetMapping("/halls/filter")
+	@ResponseBody
+	public List<Venue> filterVenuesAjax(
+			@RequestParam(required = false) String city,
+			@RequestParam(required = false) String search,
+			@RequestParam(required = false) Integer maxPrice,
+			@RequestParam(required = false) Integer minCapacity
+	) {
+		return venueService.filterVenues(city, search, maxPrice, minCapacity);
+	}
+
+
+
+
 
     // تسجيل الخروج
     @PostMapping("/venue/logout")

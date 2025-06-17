@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.makan.project.models.Venue;
 import com.makan.project.repositories.VenueRepository;
 
+
+
 @Service
 public class VenueService {
     private final VenueRepository venueRepositories;
@@ -33,5 +35,12 @@ public class VenueService {
         }
         return venueRepositories.findByNameContainingIgnoreCase(name.trim());
     }
+    
+    public List<Venue> filterVenues(String city, String search, Integer maxPrice, Integer minCapacity) {
+        return venueRepositories.filterVenues(city, search, maxPrice, minCapacity);
+    }
+
+    
+
     
 }
