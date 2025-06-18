@@ -10,6 +10,8 @@ import com.makan.project.models.Booking;
 public interface BookingRepository extends CrudRepository<Booking, Long> {
     List<Booking> findByVenueId(Long venueId);
     List<Booking> findByUserId(Long userId);
+    List<Booking> findAllByVenueOwnerId(Long ownerId);
+
     
 
 }

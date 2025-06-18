@@ -56,6 +56,10 @@ public class User {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedAt;
     
+    @NotEmpty(message = "Role is required!")
+    private String role; // user, owner, admin
+
+    
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)  
     private List<Booking> bookings;
     
@@ -171,6 +175,13 @@ public class User {
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+	public String getRole() {
+	    return role;
+	}
+
+	public void setRole(String role) {
+	    this.role = role;
 	}
 
 
