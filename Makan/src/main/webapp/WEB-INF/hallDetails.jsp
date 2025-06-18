@@ -25,10 +25,24 @@
 
 <main class="flex-grow">
 
-    <!-- Hero Image -->
+  <!-- Hero Image Slider -->
 <section class="w-full h-[600px] overflow-hidden">
-    <img src="${venue.imageUrl}" alt="${venue.name}" class="w-full h-full object-cover">
-</section>>
+  <div class="swiper mySwiper h-full">
+    <div class="swiper-wrapper h-full">
+      <c:forEach var="img" items="${venue.imageUrl}">
+        <div class="swiper-slide h-full">
+          <img src="${img}" alt="${venue.name}" class="w-full h-full object-cover" />
+        </div>
+      </c:forEach>
+    </div>
+    <!-- Pagination (dots) -->
+    <div class="swiper-pagination"></div>
+
+    <!-- Navigation buttons -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+</section>
 
     <!-- Venue Title and Action Buttons -->
     <section class="px-6 py-8 max-w-7xl mx-auto">
@@ -133,6 +147,26 @@
 
         calendar.render();
     });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  const swiper = new Swiper(".mySwiper", {
+    loop: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    autoplay: {
+      delay: 4000,
+      disableOnInteraction: false,
+    },
+  });
 </script>
 
 </body>

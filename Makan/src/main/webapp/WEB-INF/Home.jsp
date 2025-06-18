@@ -141,7 +141,7 @@
 <div class="w-2/3 flex flex-col gap-6">
 
 <c:forEach var="venue" items="${venues}">
-    <a href="/halls/${venue.id}" class="block bg-white shadow rounded-xl overflow-hidden flex hover:shadow-lg transition-shadow duration-300">
+    <a href="/halls/view/${venue.id}" class="block bg-white shadow rounded-xl overflow-hidden flex hover:shadow-lg transition-shadow duration-300">
         <img src="${venue.imageUrl}" alt="${venue.name}" class="w-48 h-48 object-cover flex-shrink-0" />
         <div class="p-4 flex flex-col justify-center text-right">
             <h3 class="text-lg font-bold mb-1">${venue.name}</h3>

@@ -49,28 +49,27 @@
                 <form:errors path="description" cssClass="text-red-600 text-sm mt-1" />
             </div>
 
-<div>
-  <label class="block mb-1 font-medium text-gray-700">الصور:</label>
+            <div>
+                <label class="block mb-1 font-medium text-gray-700">الصور:</label>
 
-  <input 
-    type="file" 
-    id="imageUpload" 
-    multiple 
-    accept="image/*"
-    class="hidden" 
-    onchange="addImages(event)" 
-  />
+                <!-- نستخدم input عادي لأنه لا يمكن ربطه بـ List مباشرةً في Spring Form -->
+                <input 
+                    type="file" 
+                    name="files" 
+                    id="imageUpload" 
+                    multiple 
+                    accept="image/*"
+                    class="hidden"
+                    onchange="addImages(event)"
+                />
 
-  <label for="imageUpload" 
-    class="cursor-pointer flex items-center justify-center border-2 border-dashed border-gray-400 rounded-lg h-32 hover:border-indigo-600 transition-colors text-gray-500"
-  >
-    اضغط هنا لاختيار صور أو اسحبها
-  </label>
+                <label for="imageUpload" class="cursor-pointer flex items-center justify-center border-2 border-dashed border-gray-400 rounded-lg h-32 hover:border-indigo-600 transition-colors text-gray-500">
+                    اضغط هنا لاختيار صور أو اسحبها
+                </label>
 
-  <div id="preview" class="mt-4 flex flex-wrap gap-4"></div>
+                <div id="preview" class="mt-4 flex flex-wrap gap-4"></div>
+            </div>
 
-  <button type="button" onclick="uploadFiles()" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded">رفع الصور</button>
-</div>
             <div class="text-center">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded transition duration-300">
                     إضافة
@@ -79,32 +78,18 @@
 
         </form:form>
     </div>
+
 <script>
-  let selectedFiles = [];
-
   function addImages(event) {
-    const files = Array.from(event.target.files);
-
-    files.forEach(file => {
-      if(!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
-        selectedFiles.push(file);
-      }
-    });
-
-    updatePreview();
-
-    event.target.value = '';
-  }
-
-  function updatePreview() {
     const preview = document.getElementById('preview');
     preview.innerHTML = '';
+    const files = event.target.files;
 
-    selectedFiles.forEach(file => {
-      if(!file.type.startsWith('image/')) return;
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith('image/')) return;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const img = document.createElement('img');
         img.src = e.target.result;
         img.className = 'w-24 h-24 object-cover rounded-lg border border-gray-300 shadow-sm';
@@ -113,34 +98,7 @@
       reader.readAsDataURL(file);
     });
   }
-
-  function uploadFiles() {
-    if(selectedFiles.length === 0) {
-      alert('اختر صورًا للرفع أولاً');
-      return;
-    }
-
-    const formData = new FormData();
-    selectedFiles.forEach((file, i) => {
-      formData.append('files', file);
-    });
-
-    fetch('/venue/new', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
-      if(response.ok) {
-        alert('تم رفع الصور بنجاح');
-        // optionally clear selectedFiles and preview
-        selectedFiles = [];
-        updatePreview();
-      } else {
-        alert('حدث خطأ أثناء الرفع');
-      }
-    })
-    .catch(() => alert('خطأ في الاتصال بالخادم'));
-  }
 </script>
+
 </body>
 </html>

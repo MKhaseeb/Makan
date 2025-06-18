@@ -83,7 +83,7 @@ public class VenueController {
             }
 
             // Join URLs into one string or adjust logic if you add List<String> imageUrls to Venue model
-            venue.setImageUrl(imageUrls.get(0)); // Just set the first image for now
+            venue.setImageUrl(imageUrls);// Just set the first image for now
 
         } catch (IOException e) {
             result.rejectValue("imageUrl", "error.venue", "فشل رفع الصور");
