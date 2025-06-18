@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -42,8 +44,10 @@ public class Venue {
     @Min(value = 1, message = "Capacity must be at least 1")
     private int capacity;
     
-    @Column(nullable = false)
-    private String imageUrl;
+    @ElementCollection
+    @CollectionTable(name = "venue_images", joinColumns = @JoinColumn(name = "venue_id"))
+    @Column(name = "image_url")
+    private List<String> imageUrl;
     @NotNull
     @Size(min = 2, max = 500, message = "Description must be between 2 and 500 characters")
     private String description;
@@ -89,7 +93,7 @@ public class Venue {
 
     public Venue() {
     }
-    public Venue(String name, String city, double pricePerDay, int capacity, String imageUrl, String description) {
+    public Venue(String name, String city, double pricePerDay, int capacity, List<String> imageUrl, String description) {
         this.name = name;
         this.city = city;
         this.pricePerDay = pricePerDay;
@@ -170,10 +174,10 @@ public class Venue {
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
-    public String getImageUrl() {
+    public List<String> getImageUrl() {
         return imageUrl;
     }
-    public void setImageUrl(String imageUrl) {
+    public void setImageUrl(List<String> imageUrl) {
         this.imageUrl = imageUrl;
     }
     public String getDescription() {
