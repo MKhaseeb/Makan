@@ -97,7 +97,15 @@ public class Venue {
         this.imageUrl = imageUrl;
         this.description = description;
     }
+    private String village;
 
+    public String getVillage() {
+        return village;
+    }
+
+    public void setVillage(String village) {
+        this.village = village;
+    }
     public Date getCreatedAt() {
         return createdAt;
     }

@@ -139,8 +139,14 @@ public class VenueController {
         session.invalidate();
         return "redirect:/";
     }
+    @GetMapping("/halls")
+    public String showAllVenues(Model model) {
+        List<Venue> allVenues = venueService.getAllVenues(); // ميثود بسيطة ترجع كل القاعات
+        model.addAttribute("venues", allVenues);
+        return "Homeuser.jsp";
+    }
     
-    @GetMapping("/halls/{id}")
+    @GetMapping("/halls/view/{id}")
     public String VenueDetails(@PathVariable Long id, Model model) {
         Venue venue = venueService.getVenueById(id); 
         List<LocalDate> bookedDates = bookingService.getBookedDatesForVenue(id); 
@@ -149,6 +155,19 @@ public class VenueController {
         model.addAttribute("bookedDates", bookedDates);
 
         return "hallDetails.jsp";
+    }
+
+    @GetMapping("/halls/filter")
+    public String filterVenues(
+        @RequestParam(required = false) String city,
+        @RequestParam(required = false) String village,
+        @RequestParam(required = false) Integer maxPrice,
+        @RequestParam(required = false) Integer minCapacity,
+        Model model
+    ) {
+        List<Venue> filteredVenues = venueService.filterVenues(city, village, maxPrice, minCapacity);
+        model.addAttribute("venues", filteredVenues);
+        return "Homeuser.jsp"; // أو أي اسم صفحة نتائج البحث عندك
     }
 
     
