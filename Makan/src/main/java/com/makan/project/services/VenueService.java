@@ -1,4 +1,5 @@
 package com.makan.project.services;
+import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -58,7 +59,21 @@ public class VenueService {
         return venueRepositories.findByNameStartingWithIgnoreCase(name.trim());
     }
     
+
     
+    public List<Venue> filterVenues(String city, String village, Integer maxPrice, Integer minCapacity) {
+        return venueRepositories.findAll().stream()
+            .filter(v -> city == null || city.isEmpty() || v.getCity().equalsIgnoreCase(city))
+            .filter(v -> village == null || village.isEmpty() || v.getVillage().equalsIgnoreCase(village))
+            .filter(v -> maxPrice == null || v.getPricePerDay() <= maxPrice)
+            .filter(v -> minCapacity == null || v.getCapacity() >= minCapacity)
+            .collect(Collectors.toList()); // ✅ هذا هو الصح
+    }
+
+    public List<Venue> getAllVenues() {
+        return venueRepositories.findAll();
+    }
+
     
 
 }

@@ -149,7 +149,7 @@
 <div class="w-2/3 flex flex-col gap-6">
 
 <c:forEach var="venue" items="${venues}">
-    <a href="/halls/${venue.id}" class="block bg-white shadow rounded-xl overflow-hidden flex hover:shadow-lg transition-shadow duration-300">
+    <a data-venue href="/halls/view/${venue.id}" class="block bg-white shadow rounded-xl overflow-hidden flex hover:shadow-lg transition-shadow duration-300">
         <img src="${venue.imageUrl}" alt="${venue.name}" class="w-48 h-48 object-cover flex-shrink-0" />
         <div class="p-4 flex flex-col justify-center text-right">
             <h3 class="text-lg font-bold mb-1">${venue.name}</h3>
@@ -162,6 +162,7 @@
 </c:forEach>
 
 
+
         </div>
 
     </div>
@@ -169,6 +170,25 @@
 </main>
 
 <jsp:include page="footer.jsp" />
+<script>
+  const searchInput = document.getElementById("searchInput");
+  const venues = document.querySelectorAll("[data-venue]");
+
+  searchInput.addEventListener("input", function () {
+    const value = this.value.trim().toLowerCase();
+
+    venues.forEach(venue => {
+      const name = venue.querySelector("h3").textContent.toLowerCase();
+      const city = venue.querySelector("p:nth-child(2)").textContent.toLowerCase();
+      const description = venue.querySelector("p:nth-child(3)").textContent.toLowerCase();
+
+      const isMatch = name.includes(value) || city.includes(value) || description.includes(value);
+
+      venue.style.display = isMatch ? "flex" : "none";
+    });
+  });
+</script>
+
 
 </body>
 
