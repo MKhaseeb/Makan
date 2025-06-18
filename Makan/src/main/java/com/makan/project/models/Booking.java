@@ -31,12 +31,12 @@ public class Booking {
     private LocalDate eventDate;
     @NonNull
     private int guestCount; 
-    @NotEmpty(message="Phone number is required!")
     @Min(value =8, message = "Phone number must be at least 8 numbers")
-    private int phoneNumber;
+    private String phoneNumber;
     @NotEmpty(message="Event type is required!")
     private String eventType;
-    @NotEmpty(message="nots is required!")
+    @NotEmpty(message="Notes is required!")
+    @Column(name = "notes")
     private String note;
     
     
@@ -100,7 +100,7 @@ public class Booking {
 
     public Booking() {
     }
-    public Booking(LocalDate eventDate, int guestCount, Venue venue, User user, double totalPrice ,  int phoneNumber , String eventType, String note) {
+    public Booking(LocalDate eventDate, int guestCount, Venue venue, User user, double totalPrice ,  String phoneNumber , String eventType, String note) {
         this.eventDate = eventDate;
         this.guestCount = guestCount;
         this.venue = venue;
@@ -143,11 +143,11 @@ public class Booking {
         return totalPrice;
     }
     
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(int phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
@@ -163,8 +163,8 @@ public class Booking {
 		return note;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
+	public void setNote(String notes) {
+		this.note = notes;
 	}
 
 	public void setTotalPrice(double totalPrice) {

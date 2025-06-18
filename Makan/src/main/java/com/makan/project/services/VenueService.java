@@ -34,4 +34,14 @@ public class VenueService {
         return venueRepositories.findByNameContainingIgnoreCase(name.trim());
     }
     
+    public List<Venue> searchByNameStartsWith(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return venueRepositories.findAll();
+        }
+        return venueRepositories.findByNameStartingWithIgnoreCase(name.trim());
+    }
+    
+    
+    
+    
 }

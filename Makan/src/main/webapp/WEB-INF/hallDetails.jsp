@@ -61,7 +61,7 @@
 
         <!-- Booking Button -->
         <div class="mt-10">
-            <a href="/booking/${venue.id}" 
+            <a href="<c:url value='/book?venueId=${venue.id}'/>" 
                class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-md text-lg shadow">
                 احجز الآن
             </a>
