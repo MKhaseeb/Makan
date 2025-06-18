@@ -135,6 +135,15 @@ public class VenueController {
     }
 
     
+    @GetMapping("/book")
+    public String showBookingForm(HttpSession session, Model model) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) return "redirect:/";
+
+        model.addAttribute("venues", venueService.allVenue());
+        model.addAttribute("user", logRegService.findUserById(userId));
+        return "bookVenue.jsp";
+    }
 
 
     
