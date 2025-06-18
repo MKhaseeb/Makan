@@ -17,6 +17,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "bookings")
@@ -27,7 +30,16 @@ public class Booking {
     @NonNull
     private LocalDate eventDate;
     @NonNull
-    private int guestCount;
+    private int guestCount; 
+    @NotEmpty(message="Phone number is required!")
+    @Min(value =8, message = "Phone number must be at least 8 numbers")
+    private int phoneNumber;
+    @NotEmpty(message="Event type is required!")
+    private String eventType;
+    @NotEmpty(message="nots is required!")
+    private String note;
+    
+    
 
     public List<Rating> getRatings() {
         return ratings;
@@ -88,12 +100,14 @@ public class Booking {
 
     public Booking() {
     }
-    public Booking(LocalDate eventDate, int guestCount, Venue venue, User user, double totalPrice) {
+    public Booking(LocalDate eventDate, int guestCount, Venue venue, User user, double totalPrice ,  int phoneNumber , String eventType, String note) {
         this.eventDate = eventDate;
         this.guestCount = guestCount;
         this.venue = venue;
         this.user = user;
-        this.totalPrice = totalPrice;
+        this.phoneNumber = phoneNumber;
+        this.eventType = eventType;
+        this.note = note;
     }
     public Long getId() {
         return id;
@@ -128,7 +142,32 @@ public class Booking {
     public double getTotalPrice() {
         return totalPrice;
     }
-    public void setTotalPrice(double totalPrice) {
+    
+    public int getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(int phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getEventType() {
+		return eventType;
+	}
+
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
     
