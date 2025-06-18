@@ -16,6 +16,8 @@
 
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -24,9 +26,9 @@
 <main class="flex-grow">
 
     <!-- Hero Image -->
-    <section class="w-full h-[600px] overflow-hidden">
-        <img src="${venue.imageUrl}" alt="${venue.name}" class="w-full h-full object-cover">
-    </section>
+<section class="w-full h-[600px] overflow-hidden">
+    <img src="${venue.imageUrl}" alt="${venue.name}" class="w-full h-full object-cover">
+</section>>
 
     <!-- Venue Title and Action Buttons -->
     <section class="px-6 py-8 max-w-7xl mx-auto">

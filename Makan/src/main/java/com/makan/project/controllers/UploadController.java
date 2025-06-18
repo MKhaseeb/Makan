@@ -15,12 +15,12 @@ public class UploadController {
     private static final String UPLOAD_DIR = "uploads/";
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile files) {
         try {
             Files.createDirectories(Paths.get(UPLOAD_DIR));
-            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String filename = UUID.randomUUID() + "_" + files.getOriginalFilename();
             Path path = Paths.get(UPLOAD_DIR, filename);
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(files.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
             // Return the relative path (to be stored as imageUrl)
             return ResponseEntity.ok("/uploads/" + filename);
