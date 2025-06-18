@@ -12,5 +12,6 @@ public interface VenueRepository extends CrudRepository<Venue, Long> {
     List<Venue> findByNameContainingIgnoreCase(String name);
 	List<Venue> findAll();
 	List<Venue> findByNameContainingIgnoreCaseOrCityContainingIgnoreCase(String name, String city);
+    List<Venue> findByNameStartingWithIgnoreCase(String name);
 
 }

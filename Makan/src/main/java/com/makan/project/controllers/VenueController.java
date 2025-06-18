@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.makan.project.models.Booking;
 import com.makan.project.models.Venue;
 import com.makan.project.services.BookingService;
 import com.makan.project.services.LogRegService;
@@ -136,14 +137,63 @@ public class VenueController {
 
     
     @GetMapping("/book")
-    public String showBookingForm(HttpSession session, Model model) {
+    public String showBookingForm(
+        @RequestParam(value="venueId", required=false) Long venueId,
+        @ModelAttribute("newBooking") Booking booking,
+        HttpSession session, Model model) {
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return "redirect:/";
 
+        if (venueId != null) {
+            Venue venue = venueService.getVenueById(venueId);
+            booking.setVenue(venue);  // Set the selected venue
+            model.addAttribute("selectedVenue", venue);
+        }
+
+        
         model.addAttribute("venues", venueService.allVenue());
         model.addAttribute("user", logRegService.findUserById(userId));
         return "bookVenue.jsp";
     }
+    
+    @PostMapping("/book")
+    public String saveBooking(
+        @Valid @ModelAttribute("newBooking") Booking booking,
+        BindingResult result,
+        HttpSession session,
+        Model model,
+        @RequestParam("venueId") Long venueId) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/";
+        }
+
+        // If there are validation errors, re-render the form
+        if (result.hasErrors()) {
+            model.addAttribute("venues", venueService.allVenue());
+            model.addAttribute("user", logRegService.findUserById(userId));
+            model.addAttribute("selectedVenue", booking.getVenue()); // re-show selected venue
+            return "bookVenue.jsp";
+        }
+
+        // Set user and venue (in case venue only came via hidden input)
+        booking.setUser(logRegService.findUserById(userId));
+        booking.setVenue(venueService.getVenueById(venueId));
+
+        // Save the booking
+        bookingService.addBooking(booking);
+
+        // Redirect to confirmation or homepage
+        return "redirect:/homes";
+        
+    }
+
+    
+  
+
+
 
 
     
