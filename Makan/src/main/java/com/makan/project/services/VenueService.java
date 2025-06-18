@@ -42,7 +42,6 @@ public class VenueService {
         }
         return venueRepositories.findByNameContainingIgnoreCase(name.trim());
     }
-
     public List<Venue> findVenuesByOwnerId(Long ownerId) {
         return venueRepositories.findByOwnerId(ownerId);
     }
@@ -50,4 +49,16 @@ public class VenueService {
     public List<Booking> findBookingsByOwnerId(Long ownerId) {
         return bookingRepository.findAllByVenueOwnerId(ownerId);
     }
+
+    
+    public List<Venue> searchByNameStartsWith(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return venueRepositories.findAll();
+        }
+        return venueRepositories.findByNameStartingWithIgnoreCase(name.trim());
+    }
+    
+    
+    
+
 }

@@ -7,8 +7,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.makan.project.models.Booking;
+
 import com.makan.project.models.User;
+
 import com.makan.project.models.Venue;
 import com.makan.project.services.BookingService;
 import com.makan.project.services.LogRegService;
@@ -55,32 +56,44 @@ public class VenueController {
     @PostMapping("/venue/new")
     public String newVenue(@Valid @ModelAttribute("newVenue") Venue venue,
                            BindingResult result,
-                           @RequestParam("file") MultipartFile file,
+                           @RequestParam("files") MultipartFile[] files,
                            HttpSession session,
                            Model model) {
         if (result.hasErrors()) {
             return "createVenue.jsp";
         }
 
+        List<String> imageUrls = new ArrayList<>();
+
         try {
-            if (!file.isEmpty()) {
-                String fileName = file.getOriginalFilename();
-                String uploadDir = "src/main/resources/static/uploads/";
-                Path filePath = Paths.get(uploadDir + fileName);
-                Files.write(filePath, file.getBytes());
-                venue.setImageUrl("/uploads/" + fileName);
-            } else {
-                result.rejectValue("imageUrl", "error.venue", "يجب رفع صورة للقاعه");
+            String uploadDir = "src/main/resources/static/uploads/";
+
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                    Path filePath = Paths.get(uploadDir + fileName);
+                    Files.write(filePath, file.getBytes());
+                    imageUrls.add("/uploads/" + fileName);
+                }
+            }
+
+            if (imageUrls.isEmpty()) {
+                result.rejectValue("imageUrl", "error.venue", "يجب رفع صورة واحدة على الأقل");
                 return "createVenue.jsp";
             }
+
+            // Join URLs into one string or adjust logic if you add List<String> imageUrls to Venue model
+            venue.setImageUrl(imageUrls.get(0)); // Just set the first image for now
+
         } catch (IOException e) {
-            result.rejectValue("imageUrl", "error.venue", "فشل رفع الصورة");
+            result.rejectValue("imageUrl", "error.venue", "فشل رفع الصور");
             return "createVenue.jsp";
         }
 
         venueService.addVenue(venue);
         return "redirect:/homes";
     }
+
 
 
     // صفحة من نحن
@@ -140,15 +153,69 @@ public class VenueController {
 
     
     @GetMapping("/book")
-    public String showBookingForm(HttpSession session, Model model) {
+    public String showBookingForm(
+        @RequestParam(value="venueId", required=false) Long venueId,
+        @ModelAttribute("newBooking") Booking booking,
+        HttpSession session, Model model) {
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return "redirect:/";
 
+        if (venueId != null) {
+            Venue venue = venueService.getVenueById(venueId);
+            booking.setVenue(venue);  // Set the selected venue
+            model.addAttribute("selectedVenue", venue);
+            
+            List<LocalDate> bookedDates = bookingService.getBookedDatesForVenue(venueId);
+            model.addAttribute("bookedDates", bookedDates);
+        }else {
+        	model.addAttribute("bookedDates", new ArrayList<LocalDate>());
+        }
+
+        
         model.addAttribute("venues", venueService.allVenue());
         model.addAttribute("user", logRegService.findUserById(userId));
         return "bookVenue.jsp";
     }
- // VenueController.java
+
+    
+    @PostMapping("/book")
+    public String saveBooking(
+        @Valid @ModelAttribute("newBooking") Booking booking,
+        BindingResult result,
+        HttpSession session,
+        Model model,
+        @RequestParam("venueId") Long venueId) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/";
+        }
+
+        // If there are validation errors, re-render the form
+        if (result.hasErrors()) {
+            model.addAttribute("venues", venueService.allVenue());
+            model.addAttribute("user", logRegService.findUserById(userId));
+            model.addAttribute("selectedVenue", booking.getVenue()); // re-show selected venue
+            return "bookVenue.jsp";
+        }
+
+        // Set user and venue (in case venue only came via hidden input)
+        booking.setUser(logRegService.findUserById(userId));
+        booking.setVenue(venueService.getVenueById(venueId));
+
+        // Save the booking
+        bookingService.addBooking(booking);
+
+        // Redirect to confirmation or homepage
+        return "redirect:/homes";
+        
+    }
+
+    
+  
+
+
 
     @GetMapping("/owner/dashboard")
     public String ownerDashboard(HttpSession session, Model model) {
