@@ -109,14 +109,18 @@
 </head>
 <body>
 
-<header class="sticky top-0 z-50">
+
+<header class="sticky top-0 z-50 bg-white shadow">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 id="site-title" class="select-none cursor-default">قاعتي</h1>
-          <a href="/venue" tabindex="0">إضافة قاعة</a>
+    <h1 id="site-title" class="select-none cursor-default text-2xl font-bold">قاعتي</h1>
+
+        <a href="/admin/owners" tabindex="0" class="mr-4 hover:text-blue-600">إدارة المالكين</a>
+        <a href="/venue" tabindex="0" class="mr-4 hover:text-blue-600">إضافة قاعة</a>
     
     <nav class="flex items-center gap-8 font-medium">
       <form action="/venue/logout" method="post">
-        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300">
+        <button type="submit"
+                class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300">
           تسجيل الخروج
         </button>
       </form>

@@ -8,13 +8,17 @@
     <title>إضافة قاعة جديدة</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-8">
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- شريط التنقل -->
+    <jsp:include page="navbarlogin.jsp" />
+
+    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-8 mt-6">
         <h1 class="text-2xl font-semibold mb-6 text-gray-800 text-center">إضافة قاعة</h1>
 
         <form:form action="/venue/new" method="post" modelAttribute="newVenue" enctype="multipart/form-data" class="space-y-5">
-            
+
             <div>
                 <label class="block mb-1 font-medium text-gray-700">الاسم:</label>
                 <form:input path="name" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />

@@ -78,6 +78,17 @@
                     <form:input path="confirm" type="password" cssClass="form-input"/>
                     <form:errors path="confirm" cssClass="text-red-500 text-sm mt-1"/>
                 </div>
+<div>
+    <form:label path="role">نوع المستخدم</form:label>
+    <form:select path="role" cssClass="form-input">
+        <form:option value="" label="-- اختر نوع المستخدم --" />
+        <form:option value="user" label="مستخدم عادي" />
+        <form:option value="owner" label="مالك قاعة" />
+        <form:option value="admin" label="مشرف" />
+    </form:select>
+    <form:errors path="role" cssClass="text-red-500 text-sm mt-1"/>
+</div>
+                
                 <button type="submit" class="golden-btn w-full py-2 rounded-lg">تسجيل حساب جديد</button>
             </form:form>
 

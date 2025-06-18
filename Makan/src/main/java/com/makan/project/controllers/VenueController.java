@@ -14,13 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.makan.project.models.Booking;
+import com.makan.project.models.User;
 import com.makan.project.models.Venue;
 import com.makan.project.services.BookingService;
 import com.makan.project.services.LogRegService;
@@ -144,7 +148,78 @@ public class VenueController {
         model.addAttribute("user", logRegService.findUserById(userId));
         return "bookVenue.jsp";
     }
+ // VenueController.java
 
+    @GetMapping("/owner/dashboard")
+    public String ownerDashboard(HttpSession session, Model model) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/";
+        }
+
+        // استدعاء القاعات التي يملكها هذا المستخدم
+        List<Venue> myVenues = venueService.findVenuesByOwnerId(userId);
+        model.addAttribute("myVenues", myVenues);
+
+        // استدعاء الحجوزات المرتبطة بقاعات هذا المستخدم
+        List<Booking> bookings = venueService.findBookingsByOwnerId(userId);
+        model.addAttribute("myBookings", bookings);
+
+        return "ownerDashboard.jsp";
+    }
+
+    
+    @GetMapping("user/home")
+    public String homeuser(HttpSession session, Model model) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/";
+        }
+
+        List<Venue> venues = venueService.allVenue();
+        model.addAttribute("venues", venues);
+        return "Homeuser.jsp";
+    }
+
+    @GetMapping("/admin/owners")
+    public String showAdminPage(Model model) {
+        model.addAttribute("newUser", new User());
+        model.addAttribute("owners", logRegService.findUsersByRole("owner"));
+        model.addAttribute("admins", logRegService.findUsersByRole("admin"));
+        return "adminManage.jsp";
+    }
+
+    @PostMapping("/admin/owners")
+    public String processAddUser(@Valid @ModelAttribute("newUser") User newUser,
+                                 BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("owners", logRegService.findUsersByRole("owner"));
+            model.addAttribute("admins", logRegService.findUsersByRole("admin"));
+            return "adminManage.jsp";
+        }
+        logRegService.register(newUser, result);
+        return "redirect:/admin/owners";
+    }
+
+    @PostMapping("/admin/delete/{id}")
+    @ResponseBody
+    public String deleteUser(@PathVariable("id") Long id) {
+        try {
+            logRegService.deleteUserById(id);
+            return "success";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+
+
+
+
+
+
+    
 
     
 }

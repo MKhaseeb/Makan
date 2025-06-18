@@ -13,4 +13,6 @@ import com.makan.project.models.User;
 public interface LogRegRepository extends CrudRepository<User, Long> {
 	List<User> findAll();
     Optional<User> findByEmail(String email);
+    List<User> findByRole(String role);
+
 }
