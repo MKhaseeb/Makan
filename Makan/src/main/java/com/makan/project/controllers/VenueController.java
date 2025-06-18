@@ -7,8 +7,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,32 +51,44 @@ public class VenueController {
     @PostMapping("/venue/new")
     public String newVenue(@Valid @ModelAttribute("newVenue") Venue venue,
                            BindingResult result,
-                           @RequestParam("file") MultipartFile file,
+                           @RequestParam("files") MultipartFile[] files,
                            HttpSession session,
                            Model model) {
         if (result.hasErrors()) {
             return "createVenue.jsp";
         }
 
+        List<String> imageUrls = new ArrayList<>();
+
         try {
-            if (!file.isEmpty()) {
-                String fileName = file.getOriginalFilename();
-                String uploadDir = "src/main/resources/static/uploads/";
-                Path filePath = Paths.get(uploadDir + fileName);
-                Files.write(filePath, file.getBytes());
-                venue.setImageUrl("/uploads/" + fileName);
-            } else {
-                result.rejectValue("imageUrl", "error.venue", "يجب رفع صورة للقاعه");
+            String uploadDir = "src/main/resources/static/uploads/";
+
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                    Path filePath = Paths.get(uploadDir + fileName);
+                    Files.write(filePath, file.getBytes());
+                    imageUrls.add("/uploads/" + fileName);
+                }
+            }
+
+            if (imageUrls.isEmpty()) {
+                result.rejectValue("imageUrl", "error.venue", "يجب رفع صورة واحدة على الأقل");
                 return "createVenue.jsp";
             }
+
+            // Join URLs into one string or adjust logic if you add List<String> imageUrls to Venue model
+            venue.setImageUrl(imageUrls.get(0)); // Just set the first image for now
+
         } catch (IOException e) {
-            result.rejectValue("imageUrl", "error.venue", "فشل رفع الصورة");
+            result.rejectValue("imageUrl", "error.venue", "فشل رفع الصور");
             return "createVenue.jsp";
         }
 
         venueService.addVenue(venue);
         return "redirect:/homes";
     }
+
 
 
     // صفحة من نحن
@@ -149,6 +160,11 @@ public class VenueController {
             Venue venue = venueService.getVenueById(venueId);
             booking.setVenue(venue);  // Set the selected venue
             model.addAttribute("selectedVenue", venue);
+            
+            List<LocalDate> bookedDates = bookingService.getBookedDatesForVenue(venueId);
+            model.addAttribute("bookedDates", bookedDates);
+        }else {
+        	model.addAttribute("bookedDates", new ArrayList<LocalDate>());
         }
 
         

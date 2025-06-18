@@ -6,20 +6,83 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>احجز قاعتك</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+
     <script>
-        function toggleOtherEventField(value) {
-            const otherField = document.getElementById('otherEventDiv');
-            if (value === 'أخرى') {
-                otherField.classList.remove('hidden');
-            } else {
-                otherField.classList.add('hidden');
+    function toggleOtherEventField(value) {
+        const otherField = document.getElementById('otherEventDiv');
+        otherField.classList.toggle('hidden', value !== 'أخرى');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const bookedDates = [
+            <c:forEach var="date" items="${bookedDates}">
+                "${date}",
+            </c:forEach>
+        ];
+
+        let selectedEvent = null;
+
+        const calendarEl = document.getElementById('calendar');
+        const hiddenInput = document.getElementById('eventDate');
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            height: 400,
+            locale: 'ar',
+            firstDay: 6,
+            selectable: true,
+
+            // Show booked dates with light red background
+            events: bookedDates.map(date => ({
+                start: date,
+                display: 'background',
+                color: '#fee2e2' // light red
+            })),
+
+            dateClick: function (info) {
+                const dateStr = info.dateStr;
+
+                if (bookedDates.includes(dateStr)) {
+                    alert("هذا التاريخ محجوز بالفعل.");
+                    return;
+                }
+
+                // Remove previous selected
+                if (selectedEvent) {
+                    selectedEvent.remove();
+                    selectedEvent = null;
+                }
+
+                // Create a small rounded green badge as title
+                selectedEvent = calendar.addEvent({
+                    start: dateStr,
+                    allDay: true,
+                    title: "تم التحديد",
+                    display: 'list-item',
+                    textColor: '#15803d', // green-700
+                    classNames: ['custom-selected-date']
+                });
+
+                hiddenInput.value = dateStr;
             }
-        }
+        });
+
+        calendar.render();
+    });
     </script>
 </head>
+
 <body class="bg-gray-100 p-10">
 
 <c:if test="${not empty selectedVenue}">
@@ -63,11 +126,14 @@
     </label>
 
     <!-- Date -->
-    <label class="block">
-        <span class="text-gray-700">تاريخ الحجز:</span>
-        <form:input path="eventDate" type="date" cssClass="mt-1 block w-full border p-2 rounded" />
-        <form:errors path="eventDate" cssClass="text-red-600 text-sm mt-1 block" />
-    </label>
+<!-- Date (FullCalendar) -->
+<label class="block">
+    <span class="text-gray-700">تاريخ الحجز:</span>
+    <div id="calendar" class="mt-2 bg-white rounded shadow p-4"></div>
+    <form:hidden path="eventDate" id="eventDate" />
+    <form:errors path="eventDate" cssClass="text-red-600 text-sm mt-1 block" />
+</label>
+
 
     <!-- Time -->
 
