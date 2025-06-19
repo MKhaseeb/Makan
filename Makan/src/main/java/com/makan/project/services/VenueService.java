@@ -64,7 +64,9 @@ public class VenueService {
     public List<Venue> filterVenues(String city, String village, Integer maxPrice, Integer minCapacity) {
         return venueRepositories.findAll().stream()
             .filter(v -> city == null || city.isEmpty() || v.getCity().equalsIgnoreCase(city))
-            .filter(v -> village == null || village.isEmpty() || v.getVillage().equalsIgnoreCase(village))
+            .filter(v -> village == null || village.isEmpty() || 
+            (v.getVillage() != null && v.getVillage().equalsIgnoreCase(village)))
+
             .filter(v -> maxPrice == null || v.getPricePerDay() <= maxPrice)
             .filter(v -> minCapacity == null || v.getCapacity() >= minCapacity)
             .collect(Collectors.toList()); // ✅ هذا هو الصح

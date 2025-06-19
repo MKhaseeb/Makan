@@ -28,10 +28,40 @@
             </div>
 
             <div>
-                <label class="block mb-1 font-medium text-gray-700">المدينة:</label>
-                <form:input path="city" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                <form:errors path="city" cssClass="text-red-600 text-sm mt-1" />
-            </div>
+    <label class="block mb-1 font-medium text-gray-700">المدينة:</label>
+    <form:select path="city" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <form:option value="" label="اختر مدينة" />
+        <form:option value="القدس" />
+        <form:option value="رام الله" />
+        <form:option value="البيرة" />
+        <form:option value="نابلس" />
+        <form:option value="الخليل" />
+        <form:option value="بيت لحم" />
+        <form:option value="طولكرم" />
+        <form:option value="قلقيلية" />
+        <form:option value="سلفيت" />
+        <form:option value="جنين" />
+        <form:option value="أريحا" />
+        <form:option value="طوباس" />
+        <form:option value="غزة" />
+        <form:option value="خانيونس" />
+        <form:option value="رفح" />
+        <form:option value="دير البلح" />
+        <form:option value="جباليا" />
+        <form:option value="الزهراء" />
+        <form:option value="بيت حانون" />
+        <form:option value="بيت لاهيا" />
+    </form:select>
+    <form:errors path="city" cssClass="text-red-600 text-sm mt-1" />
+</div>
+
+<!-- القرية -->
+<div>
+    <label class="block mb-1 font-medium text-gray-700">القرية:</label>
+    <form:input path="village" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="مثال: بيتونيا" />
+    <form:errors path="village" cssClass="text-red-600 text-sm mt-1" />
+</div>
+
 
             <div>
                 <label class="block mb-1 font-medium text-gray-700">السعر اليومي:</label>
