@@ -8,13 +8,8 @@
   <meta charset="UTF-8" />
   <title>احجز قاعتك</title>
 
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- FullCalendar CSS -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
-
-  <!-- FullCalendar JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
 
   <script>
@@ -31,7 +26,6 @@
       ];
 
       let selectedEvent = null;
-
       const calendarEl = document.getElementById('calendar');
       const hiddenInput = document.getElementById('eventDate');
 
@@ -41,26 +35,18 @@
         locale: 'ar',
         firstDay: 6,
         selectable: true,
-
         events: bookedDates.map(date => ({
           start: date,
           display: 'background',
           color: '#fee2e2'
         })),
-
         dateClick: function (info) {
           const dateStr = info.dateStr;
-
           if (bookedDates.includes(dateStr)) {
             alert("هذا التاريخ محجوز بالفعل.");
             return;
           }
-
-          if (selectedEvent) {
-            selectedEvent.remove();
-            selectedEvent = null;
-          }
-
+          if (selectedEvent) selectedEvent.remove();
           selectedEvent = calendar.addEvent({
             start: dateStr,
             allDay: true,
@@ -68,7 +54,6 @@
             display: 'list-item',
             textColor: '#15803d'
           });
-
           hiddenInput.value = dateStr;
         }
       });
@@ -76,7 +61,6 @@
       calendar.render();
     });
 
-    // ⭐ المودال والتقييم ⭐
     function setRating(value) {
       document.getElementById("ratingValue").value = value;
       for (let i = 1; i <= 5; i++) {
@@ -90,7 +74,6 @@
         alert("من فضلك اختر تقييمًا أولاً ⭐");
         return;
       }
-
       alert("شكراً لتقييمك بـ " + rating + " نجمة ⭐");
       closeModal();
     }
@@ -121,7 +104,7 @@
 <div class="max-w-2xl mx-auto bg-white p-8 rounded shadow">
   <h2 class="text-2xl font-bold mb-6 text-center">نموذج حجز القاعة</h2>
 
-  <form:form method="post" action="/book" modelAttribute="newBooking" cssClass="space-y-4" onsubmit="event.preventDefault(); showSuccessModal();">
+  <form:form method="post" action="/book" modelAttribute="newBooking" cssClass="space-y-4">
 
     <label class="block">
       <span class="text-gray-700">الاسم الكامل:</span>
@@ -204,6 +187,15 @@
     <button onclick="closeModal()" class="bg-gray-300 text-black px-4 py-2 rounded w-full">إغلاق</button>
   </div>
 </div>
+
+<!-- ✅ إظهار المودال بعد الحجز -->
+<c:if test="${success}">
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      showSuccessModal();
+    });
+  </script>
+</c:if>
 
 </body>
 </html>

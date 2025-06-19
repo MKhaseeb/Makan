@@ -180,29 +180,30 @@ public class VenueController {
     @GetMapping("/book")
     public String showBookingForm(
         @RequestParam(value="venueId", required=false) Long venueId,
+        @RequestParam(value="success", required=false) Boolean success,
         @ModelAttribute("newBooking") Booking booking,
         HttpSession session, Model model) {
-
+    
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return "redirect:/";
-
+    
         if (venueId != null) {
             Venue venue = venueService.getVenueById(venueId);
-            booking.setVenue(venue);  // Set the selected venue
+            booking.setVenue(venue);
             model.addAttribute("selectedVenue", venue);
             
             List<LocalDate> bookedDates = bookingService.getBookedDatesForVenue(venueId);
             model.addAttribute("bookedDates", bookedDates);
-        }else {
-        	model.addAttribute("bookedDates", new ArrayList<LocalDate>());
+        } else {
+            model.addAttribute("bookedDates", new ArrayList<LocalDate>());
         }
-
-        
+    
         model.addAttribute("venues", venueService.allVenue());
         model.addAttribute("user", logRegService.findUserById(userId));
+        model.addAttribute("success", success);
         return "bookVenue.jsp";
     }
-
+    
     
     @PostMapping("/book")
     public String saveBooking(
