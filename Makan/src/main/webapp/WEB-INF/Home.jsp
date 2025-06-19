@@ -93,7 +93,7 @@
             <input type="number" name="minCapacity" class="w-full mb-6 p-2 rounded-md border" oninput="filterVenues()" />
 
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">
-                فلترة
+                بحث
             </button>
         </form>
 
