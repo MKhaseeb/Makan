@@ -233,7 +233,7 @@ public class VenueController {
         bookingService.addBooking(booking);
 
         // Redirect to confirmation or homepage
-        return "redirect:/homes";
+		return "redirect:/book?success=true";
         
     }
 
