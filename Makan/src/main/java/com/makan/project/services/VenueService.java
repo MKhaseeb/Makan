@@ -7,14 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.makan.project.models.Booking;
+import com.makan.project.models.User;
 import com.makan.project.models.Venue;
 import com.makan.project.repositories.BookingRepository;
+import com.makan.project.repositories.LogRegRepository;
 import com.makan.project.repositories.VenueRepository;
 
 @Service
 public class VenueService {
     private final VenueRepository venueRepositories;
     private final BookingRepository bookingRepository;
+    @Autowired
+    private LogRegRepository logRegRepository;
+    
+
 
     public VenueService(VenueRepository venueRepositories, BookingRepository bookingRepository) {
         this.venueRepositories = venueRepositories;
@@ -75,6 +81,7 @@ public class VenueService {
     public List<Venue> getAllVenues() {
         return venueRepositories.findAll();
     }
+    
 
     
 

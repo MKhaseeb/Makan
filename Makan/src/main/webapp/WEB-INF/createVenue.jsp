@@ -110,6 +110,19 @@
     <input type="hidden" name="longitude" id="lon" />
 </div>
 
+<div>
+    <label class="block mb-1 font-medium text-gray-700">اختر مالك القاعة:</label>
+    <form:select path="owner.id" cssClass="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <form:option value="" label="اختر مالكًا" />
+        <c:forEach items="${owners}" var="owner">
+            <form:option value="${owner.id}">
+                ${owner.firstname} ${owner.lastname} - ${owner.email}
+            </form:option>
+        </c:forEach>
+    </form:select>
+    <form:errors path="owner.id" cssClass="text-red-600 text-sm mt-1" />
+</div>
+
             <div class="text-center">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded transition duration-300">
                     إضافة

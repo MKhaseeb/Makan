@@ -2,6 +2,7 @@ package com.makan.project.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,15 @@ import org.springframework.validation.BindingResult;
 import com.makan.project.models.LoginUser;
 import com.makan.project.models.User;
 import com.makan.project.repositories.LogRegRepository;
+import com.makan.project.repositories.VenueRepository;
 
 @Service
 public class LogRegService {
 
     @Autowired
     private LogRegRepository logRegRepository;
+    @Autowired
+    private VenueRepository venueRepositories;
 
     public User register(User newUser, BindingResult result) {        
         Optional<User> potentialUser = logRegRepository.findByEmail(newUser.getEmail());
@@ -56,6 +60,14 @@ public class LogRegService {
 
         return user;
     }
+    
+    public List<User> findUnassignedOwners() {
+        List<User> allOwners = logRegRepository.findByRole("owner");
+        return allOwners.stream()
+            .filter(owner -> venueRepositories.findByOwner(owner) == null)
+            .collect(Collectors.toList());
+    }
+
 
     public User findUserById(Long id) {
         Optional<User> user = logRegRepository.findById(id);
@@ -69,5 +81,7 @@ public class LogRegService {
     public void deleteUserById(Long id) {
         logRegRepository.deleteById(id);
     }
+    
+    
 
 }
