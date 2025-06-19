@@ -135,17 +135,6 @@
 </button>
 
 <script>
-  function toggleLanguage() {
-    const btn = document.getElementById('langToggle');
-    if (btn.innerText === 'EN') {
-      btn.innerText = 'ع';
-      // logic to switch to Arabic
-    } else {
-      btn.innerText = 'EN';
-      // logic to switch to English
-    }
-  }
-
   function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

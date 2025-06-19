@@ -29,6 +29,12 @@
             outline: none;
 
         }
+        #site-title {
+  color: #0c6efd;
+  font-size: 2.2rem;
+  font-weight: 900;
+}
+        
 
     </style>
 
@@ -39,18 +45,26 @@
 <body class="min-h-screen flex flex-col">
 
 
-<header class="sticky top-0 z-50">
+<header class="sticky top-0 z-50 backdrop-blur-lg bg-white/70 border-b border-black/10 shadow-md">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 id="site-title" class="select-none cursor-default">قاعتي</h1>    
-    <nav class="flex items-center gap-8 font-medium">
+    <h1 id="site-title" class="select-none cursor-default text-3xl font-extrabold text-blue-600">
+      قاعتي
+    </h1>
+
+    <nav class="flex items-center gap-6 font-medium text-gray-700">
+      <!-- روابط إضافية إن وجدت -->
+      <!-- <a href="#" class="hover:text-blue-600 transition">رابط</a> -->
+
       <form action="/venue/logout" method="post">
-        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300">
+        <button type="submit"
+          class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow-lg transition duration-300">
           تسجيل الخروج
         </button>
       </form>
     </nav>
   </div>
 </header>
+
 
 <main class="flex-grow">
     <div class="max-w-7xl mx-auto px-6 mt-8">
@@ -119,26 +133,19 @@
 
 
             <label class="block mb-2 text-gray-700">القرية:</label>
-
             <input type="text" name="village" placeholder="مثال: بيتونيا" class="w-full mb-4 p-2 rounded-md border" />
-
-
 
             <label class="block mb-2 text-gray-700">السعر الأقصى:</label>
 
             <input type="number" name="maxPrice" class="w-full mb-4 p-2 rounded-md border" />
 
-
-
             <label class="block mb-2 text-gray-700">الحد الأدنى للسعة:</label>
 
             <input type="number" name="minCapacity" class="w-full mb-6 p-2 rounded-md border" />
 
-
-
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">
 
-                فلترة
+                بحث
 
             </button>
 
@@ -148,18 +155,26 @@
 
 <div class="w-2/3 flex flex-col gap-6">
 
+<div id="noResultsMessage"
+     class="text-center text-gray-500 text-xl font-semibold py-10"
+     style="${empty venues ? '' : 'display:none;'}">
+    لا يوجد قاعات .
+</div>
+
+
 <c:forEach var="venue" items="${venues}">
     <a data-venue href="/halls/view/${venue.id}" class="block bg-white shadow rounded-xl overflow-hidden flex hover:shadow-lg transition-shadow duration-300">
         <img src="${venue.imageUrl}" alt="${venue.name}" class="w-48 h-48 object-cover flex-shrink-0" />
         <div class="p-4 flex flex-col justify-center text-right">
             <h3 class="text-lg font-bold mb-1">${venue.name}</h3>
             <p class="text-gray-600 mb-1">المدينة: ${venue.city}</p>
+            <p class="text-gray-600 mb-1">القرية: ${venue.village}</p>
             <p class="text-gray-600 mb-1">الوصف: ${venue.description}</p>
             <p class="text-gray-600 mb-1">السعر: ${venue.pricePerDay} شيكل</p>
             <p class="text-gray-600">السعة: ${venue.capacity} شخص</p>
         </div>
     </a>
-</c:forEach>
+</c:forEach> 
 
 
 
@@ -170,12 +185,15 @@
 </main>
 
 <jsp:include page="footer.jsp" />
+
 <script>
   const searchInput = document.getElementById("searchInput");
   const venues = document.querySelectorAll("[data-venue]");
+  const noResultsMessage = document.getElementById("noResultsMessage");
 
   searchInput.addEventListener("input", function () {
     const value = this.value.trim().toLowerCase();
+    let visibleCount = 0;
 
     venues.forEach(venue => {
       const name = venue.querySelector("h3").textContent.toLowerCase();
@@ -183,9 +201,14 @@
       const description = venue.querySelector("p:nth-child(3)").textContent.toLowerCase();
 
       const isMatch = name.includes(value) || city.includes(value) || description.includes(value);
-
       venue.style.display = isMatch ? "flex" : "none";
+
+      if (isMatch) visibleCount++;
     });
+
+    if (noResultsMessage) {
+      noResultsMessage.style.display = visibleCount === 0 ? "block" : "none";
+    }
   });
 </script>
 
