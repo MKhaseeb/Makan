@@ -6,10 +6,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,15 +23,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.makan.project.models.Booking;
-
+import com.makan.project.models.ChatMessage;
 import com.makan.project.models.User;
 
 import com.makan.project.models.Venue;
+import com.makan.project.repositories.BookingRepository;
+import com.makan.project.repositories.ChatMessageRepository;
+import com.makan.project.repositories.VenueRepository;
 import com.makan.project.services.BookingService;
 import com.makan.project.services.LogRegService;
 import com.makan.project.services.VenueService;
@@ -39,17 +48,27 @@ public class VenueController {
 
     @Autowired
     VenueService venueService;
+    
+    @Autowired
+    VenueRepository venueRepository;
+    
+    @Autowired
+    BookingRepository bookingRepository;
 
     @Autowired
     LogRegService logRegService;
     
     @Autowired
      BookingService bookingService;
+    
+    @Autowired
+    ChatMessageRepository chatMessageRepository;
 
     // صفحة إنشاء القاعة
     @GetMapping("/venue")
     public String createVenue(@ModelAttribute("newVenue") Venue venue, HttpSession session, Model model) {
     	  model.addAttribute("owners", logRegService.findUnassignedOwners());
+    	  
         return "createVenue.jsp";
     }
 
@@ -247,17 +266,35 @@ public class VenueController {
     @GetMapping("/owner/dashboard")
     public String ownerDashboard(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/";
+        User owner = (User) session.getAttribute("user");
+
+        if (userId == null || owner == null || !owner.getRole().equals("owner")) {
+            return "redirect:/login";
         }
 
-        // استدعاء القاعات التي يملكها هذا المستخدم
-        List<Venue> myVenues = venueService.findVenuesByOwnerId(userId);
-        model.addAttribute("myVenues", myVenues);
+        // القاعات المملوكة
+        List<Venue> ownedVenues = venueRepository.findByOwner(owner);
+        model.addAttribute("venues", ownedVenues);
 
-        // استدعاء الحجوزات المرتبطة بقاعات هذا المستخدم
-        List<Booking> bookings = venueService.findBookingsByOwnerId(userId);
-        model.addAttribute("myBookings", bookings);
+        // الحجوزات على هذه القاعات
+        List<Booking> ownerBookings = bookingRepository.findByVenueIn(ownedVenues);
+        model.addAttribute("bookings", ownerBookings);
+
+        // تحميل ملخصات الدردشة (آخر رسالة لكل محادثة)
+        List<ChatMessage> chats = chatMessageRepository.findChatsByOwnerId(owner.getId());
+        // قم بتحويلها إلى ملخصات مناسبة للعرض (يمكنك عمل DTO أو Map)
+        List<Map<String, Object>> chatSummaries = new ArrayList<>();
+
+        for (ChatMessage chat : chats) {
+            Map<String, Object> summary = new HashMap<>();
+            summary.put("chatId", chat.getChatId());
+            summary.put("senderName", chat.getSenderName()); // تأكد من تعبئة هذا الحقل
+            summary.put("lastMessage", chat.getContent());
+            summary.put("lastTimestamp", chat.getTimestamp());
+            chatSummaries.add(summary);
+        }
+
+        model.addAttribute("chatSummaries", chatSummaries);
 
         return "ownerDashboard.jsp";
     }
@@ -306,14 +343,50 @@ public class VenueController {
             return "error";
         }
     }
-
-
-
-
-
-
-
     
 
-    
+
+
+
+    @PostMapping("/updateDetails")
+    public ResponseEntity<Map<String, Object>> updateDetails(@RequestBody Map<String, Object> payload) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Long id = ((Number) payload.get("id")).longValue();
+            String newName = (String) payload.get("name");
+            String newDesc = (String) payload.get("description");
+            String newFullAddress = (String) payload.get("fullAddress");
+
+            Optional<Venue> venueOpt = venueRepository.findById(id);
+            if (venueOpt.isPresent()) {
+                Venue venue = venueOpt.get();
+
+                // Check ownership if needed, to secure endpoint (not shown here)
+
+                venue.setName(newName);
+                venue.setDescription(newDesc);
+                venue.setFullAddress(newFullAddress);
+
+                venueRepository.save(venue);
+
+                response.put("success", true);
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "Venue not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 }
+
+
+
+    
+
+    
+

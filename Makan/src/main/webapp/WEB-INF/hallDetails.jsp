@@ -12,8 +12,25 @@
             font-family: 'Cairo', sans-serif;
             background-color: #fdfcf9;
         }
+        .edit-icon {
+            width: 20px; height: 20px; cursor: pointer; transition: color 0.3s;
+            color: #4f46e5; /* indigo-600 */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .edit-icon:hover {
+            color: #3730a3; /* indigo-800 */
+        }
+        .hidden { display: none !important; }
+        #calendar {
+            background-color: white;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
     </style>
-
+    <!-- روابط مكتبات FullCalendar, Swiper, Leaflet كما في ملفك الأصلي -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -41,49 +58,118 @@
 </section>
 
 <section class="px-6 py-8 max-w-7xl mx-auto">
-    <h1 class="text-4xl font-bold text-gray-800 mb-6">${venue.name}</h1>
 
-    <div class="flex flex-wrap gap-4 mb-8">
-        <button class="tabBtn bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md" data-tab="description">الوصف</button>
-        <button class="tabBtn bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md" data-tab="schedule">المواعيد</button>
-        <button class="tabBtn bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md" data-tab="pricing">الأسعار</button>
-    </div>
+  <!-- اسم القاعة -->
+  <div class="flex items-center gap-2 mb-6">
+    <h1 id="venueNameText" class="text-4xl font-bold text-gray-800">${venue.name}</h1>
+    <input type="text" id="venueNameInput" class="hidden border rounded px-2 py-1 text-2xl font-bold" value="${venue.name}" />
+    
+    <c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
+      <button id="editVenueNameBtn" class="edit-icon" title="تعديل اسم القاعة" type="button" aria-label="Edit Venue Name">
+        <!-- أيقونة قلم SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3 3L20.5 5.5a2.121 2.121 0 00-3-3L9 11z"/>
+        </svg>
+      </button>
+    </c:if>
+  </div>
 
-    <div id="description" class="tabContent">
-        <h2 class="text-xl font-semibold mb-2">الوصف:</h2>
-        <p class="text-gray-700 leading-relaxed">${venue.description}</p>
-        <h2 class="text-xl font-semibold mb-2">العنوان الكامل:</h2>
-    <p class="text-gray-700 leading-relaxed">${venue.fullAddress}</p>
-    </div>
+  <!-- تبويبات -->
+  <div class="flex flex-wrap gap-4 mb-8">
+    <button class="tabBtn bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md" data-tab="description">الوصف</button>
+    <button class="tabBtn bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md" data-tab="schedule">المواعيد</button>
+    <button class="tabBtn bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md" data-tab="pricing">الأسعار</button>
+  </div>
 
-    <div id="schedule" class="tabContent hidden">
-        <h2 class="text-xl font-semibold mb-2">المواعيد المتاحة:</h2>
-        <div id="calendar" class="mt-6 bg-white rounded shadow p-4"></div>
-    </div>
+  <!-- الوصف والعنوان -->
+  <div id="description" class="tabContent">
+    <h2 class="text-xl font-semibold mb-2 flex items-center justify-between">
+      الوصف:
+      <c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
+        <button id="editVenueDescriptionBtn" class="edit-icon" title="تعديل الوصف" type="button" aria-label="Edit Description">
+          <!-- أيقونة قلم SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3 3L20.5 5.5a2.121 2.121 0 00-3-3L9 11z"/>
+          </svg>
+        </button>
+      </c:if>
+    </h2>
+    <p id="venueDescriptionText" class="text-gray-700 leading-relaxed">${venue.description}</p>
+    <textarea id="venueDescriptionInput" class="hidden w-full border rounded p-2" rows="5">${venue.description}</textarea>
 
-    <div id="pricing" class="tabContent hidden">
-        <h2 class="text-xl font-semibold mb-2">الأسعار:</h2>
-        <p class="text-gray-700 mb-1">السعر اليومي: ${venue.pricePerDay} شيكل</p>
-        <p class="text-gray-600">تخصيص الأسعار حسب اليوم أو المناسبة متاح عند الطلب.</p>
-    </div>
+    <h2 class="text-xl font-semibold mb-2 flex items-center justify-between mt-8">
+      العنوان الكامل:
+      <c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
+        <button id="editVenueAddressBtn" class="edit-icon" title="تعديل العنوان" type="button" aria-label="Edit Full Address">
+          <!-- أيقونة قلم SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3 3L20.5 5.5a2.121 2.121 0 00-3-3L9 11z"/>
+          </svg>
+        </button>
+      </c:if>
+    </h2>
+    <p id="venueAddressText" class="text-gray-700 leading-relaxed">${venue.fullAddress}</p>
+    <textarea id="venueAddressInput" class="hidden w-full border rounded p-2" rows="3">${venue.fullAddress}</textarea>
+  </div>
 
-    <div class="mt-10">
-        <h2 class="text-xl font-semibold mb-2">موقع القاعة على الخريطة:</h2>
-        <div id="venueMap" style="height: 400px; width: 100%;" class="rounded shadow"></div>
-    </div>
+  <!-- تبويب المواعيد مع التقويم -->
+  <div id="schedule" class="tabContent hidden">
+    <div id="calendar"></div>
+  </div>
 
-    <div class="mt-10">
-        <a href="<c:url value='/book?venueId=${venue.id}'/>" 
-           class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-md text-lg shadow">
-            احجز الآن
-        </a>
+  <!-- الأسعار -->
+  <div id="pricing" class="tabContent hidden">
+    <h2 class="text-xl font-semibold mb-2 flex items-center justify-between">
+      الأسعار:
+      <c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
+        <button id="editVenuePriceBtn" class="edit-icon" title="تعديل السعر" type="button" aria-label="Edit Price">
+          <!-- أيقونة قلم SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3 3L20.5 5.5a2.121 2.121 0 00-3-3L9 11z"/>
+          </svg>
+        </button>
+      </c:if>
+    </h2>
+    <p id="venuePriceText" class="text-gray-700 mb-1">السعر اليومي: ${venue.pricePerDay} شيكل</p>
+    <input id="venuePriceInput" type="number" min="1" step="0.01" class="hidden border rounded p-2 w-32" value="${venue.pricePerDay}"/>
+
+    <p class="text-gray-600">تخصيص الأسعار حسب اليوم أو المناسبة متاح عند الطلب.</p>
+  </div>
+
+  <!-- الخريطة -->
+  <div class="mt-10">
+    <h2 class="text-xl font-semibold mb-2">موقع القاعة على الخريطة:</h2>
+    <div id="venueMap" style="height: 400px; width: 100%;" class="rounded shadow"></div>
+  </div>
+
+  <!-- أزرار الحجز وحفظ التغييرات -->
+  <div class="mt-10 flex gap-4 items-center">
+    <a href="<c:url value='/book?venueId=${venue.id}'/>" id="bookingBtn" class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-md text-lg shadow">
+      احجز الآن
+    </a>
+    <button id="openChatBtn"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-md text-lg shadow flex items-center gap-2"
+        type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M8.625 21.75a.75.75 0 01-.75-.75v-2.25A2.25 2.25 0 005.625 16.5h-2.25a.75.75 0 01-.75-.75v-10.5A2.25 2.25 0 015.625 3h12.75A2.25 2.25 0 0120.625 5.25v10.5a.75.75 0 01-.75.75h-2.25a2.25 2.25 0 00-2.25 2.25v2.25a.75.75 0 01-.75.75h-4.5z" />
+        </svg>
+        تواصل مع المالك
+    </button>
+
+    <div id="editButtonsContainer" class="hidden gap-4">
+      <button id="saveChangesBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md">حفظ التغييرات</button>
+      <button id="cancelChangesBtn" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-3 rounded-md">إلغاء</button>
     </div>
+  </div>
+
 </section>
 </main>
 
 <jsp:include page="footer.jsp" />
 
-<!-- Tabs Script -->
+<!-- سكربت تبويبات -->
 <script>
     const tabBtns = document.querySelectorAll('.tabBtn');
     const tabContents = document.querySelectorAll('.tabContent');
@@ -101,8 +187,12 @@
             document.getElementById(btn.getAttribute('data-tab')).classList.remove('hidden');
         });
     });
+
+    // اجعل تبويب الوصف ظاهر افتراضياً عند تحميل الصفحة
+    document.getElementById('description').classList.remove('hidden');
 </script>
 
+<!-- مكتبات FullCalendar, Swiper, Leaflet -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -174,5 +264,240 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<!-- كود التعديل، فقط للمالك -->
+<c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
+<script>
+    let isEditing = false;
+
+    const venueNameText = document.getElementById("venueNameText");
+    const venueNameInput = document.getElementById("venueNameInput");
+    const editVenueNameBtn = document.getElementById("editVenueNameBtn");
+
+    const venueDescriptionText = document.getElementById("venueDescriptionText");
+    const venueDescriptionInput = document.getElementById("venueDescriptionInput");
+    const editVenueDescriptionBtn = document.getElementById("editVenueDescriptionBtn");
+
+    const venueAddressText = document.getElementById("venueAddressText");
+    const venueAddressInput = document.getElementById("venueAddressInput");
+    const editVenueAddressBtn = document.getElementById("editVenueAddressBtn");
+
+    const venuePriceText = document.getElementById("venuePriceText");
+    const venuePriceInput = document.getElementById("venuePriceInput");
+    const editVenuePriceBtn = document.getElementById("editVenuePriceBtn");
+
+    const bookingBtn = document.getElementById("bookingBtn");
+    const editButtonsContainer = document.getElementById("editButtonsContainer");
+    const saveChangesBtn = document.getElementById("saveChangesBtn");
+    const cancelChangesBtn = document.getElementById("cancelChangesBtn");
+
+    function enterEditMode() {
+        if (isEditing) return;
+        isEditing = true;
+
+        venueNameText.classList.add("hidden");
+        venueNameInput.classList.remove("hidden");
+        editVenueNameBtn.classList.add("hidden");
+
+        venueDescriptionText.classList.add("hidden");
+        venueDescriptionInput.classList.remove("hidden");
+        editVenueDescriptionBtn.classList.add("hidden");
+
+        venueAddressText.classList.add("hidden");
+        venueAddressInput.classList.remove("hidden");
+        editVenueAddressBtn.classList.add("hidden");
+
+        venuePriceText.classList.add("hidden");
+        venuePriceInput.classList.remove("hidden");
+        editVenuePriceBtn.classList.add("hidden");
+
+        bookingBtn.classList.add("hidden");
+        editButtonsContainer.classList.remove("hidden");
+    }
+
+    function exitEditMode() {
+        if (!isEditing) return;
+        isEditing = false;
+
+        venueNameText.classList.remove("hidden");
+        venueNameInput.classList.add("hidden");
+        editVenueNameBtn.classList.remove("hidden");
+        venueNameInput.value = venueNameText.textContent.trim();
+
+        venueDescriptionText.classList.remove("hidden");
+        venueDescriptionInput.classList.add("hidden");
+        editVenueDescriptionBtn.classList.remove("hidden");
+        venueDescriptionInput.value = venueDescriptionText.textContent.trim();
+
+        venueAddressText.classList.remove("hidden");
+        venueAddressInput.classList.add("hidden");
+        editVenueAddressBtn.classList.remove("hidden");
+        venueAddressInput.value = venueAddressText.textContent.trim();
+
+        venuePriceText.classList.remove("hidden");
+        venuePriceInput.classList.add("hidden");
+        editVenuePriceBtn.classList.remove("hidden");
+        venuePriceInput.value = venuePriceText.textContent.replace(/[^\d.]/g, '').trim();
+
+        bookingBtn.classList.remove("hidden");
+        editButtonsContainer.classList.add("hidden");
+    }
+
+    function validateInputs() {
+        if (venueNameInput.value.trim() === "") {
+            alert("اسم القاعة لا يمكن أن يكون فارغًا");
+            return false;
+        }
+        if (venueDescriptionInput.value.trim() === "") {
+            alert("الوصف لا يمكن أن يكون فارغًا");
+            return false;
+        }
+        if (venueAddressInput.value.trim() === "") {
+            alert("العنوان الكامل لا يمكن أن يكون فارغًا");
+            return false;
+        }
+        if (venuePriceInput.value.trim() === "" || isNaN(venuePriceInput.value) || Number(venuePriceInput.value) <= 0) {
+            alert("السعر يجب أن يكون رقماً أكبر من صفر");
+            return false;
+        }
+        return true;
+    }
+
+    editVenueNameBtn.addEventListener("click", enterEditMode);
+    editVenueDescriptionBtn.addEventListener("click", enterEditMode);
+    editVenueAddressBtn.addEventListener("click", enterEditMode);
+    editVenuePriceBtn.addEventListener("click", enterEditMode);
+
+    cancelChangesBtn.addEventListener("click", exitEditMode);
+
+    saveChangesBtn.addEventListener("click", () => {
+        if (!validateInputs()) return;
+
+        const payload = {
+            id: ${venue.id},
+            name: venueNameInput.value.trim(),
+            description: venueDescriptionInput.value.trim(),
+            fullAddress: venueAddressInput.value.trim(),
+            pricePerDay: parseFloat(venuePriceInput.value.trim())
+        };
+
+        fetch('/updateDetails', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                venueNameText.textContent = payload.name;
+                venueDescriptionText.textContent = payload.description;
+                venueAddressText.textContent = payload.fullAddress;
+                venuePriceText.textContent = `السعر اليومي: ${payload.pricePerDay} شيكل`;
+                exitEditMode();
+            } else {
+                alert("فشل التحديث: " + (data.message || "خطأ غير معروف"));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("فشل الاتصال بالخادم");
+        });
+    });
+</script>
+</c:if>
+
+<!-- Chat Modal -->
+<div id="chatModal" class="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
+        <div class="flex justify-between items-center border-b p-4">
+            <h2 class="text-lg font-bold">محادثة مع المالك</h2>
+            <button id="closeChatBtn" class="text-gray-500 hover:text-gray-700">&times;</button>
+        </div>
+        <div id="chatMessages" class="p-4 h-64 overflow-y-auto space-y-2 bg-gray-50"></div>
+        <form id="chatForm" class="flex border-t p-2">
+            <input id="chatInput" type="text" placeholder="اكتب رسالتك..." class="flex-1 border rounded px-2 py-1 mr-2" autocomplete="off" />
+            <button type="submit" class="bg-blue-600 text-white px-4 py-1 rounded">إرسال</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+<c:if test="${sessionScope.user != null}">
+    // These variables are only defined if user is logged in!
+    var chatId = "${venue.owner.id}_${sessionScope.user.id}";
+    var senderId = "${sessionScope.user.id}";
+    var receiverId = "${venue.owner.id}";
+    let stompClient = null;
+    let chatConnected = false;
+
+    function connectChat() {
+        if (chatConnected) return;
+        chatConnected = true;
+        const socket = new SockJS('/chat-websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/chat/' + chatId, function (message) {
+                showMessage(JSON.parse(message.body));
+            });
+            // Load chat history
+            fetch('/api/chat/' + chatId + '/messages')
+                .then(res => res.json())
+                .then(data => data.forEach(showMessage));
+        });
+    }
+
+    function showMessage(message) {
+        const chatMessages = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = (message.senderId == senderId) 
+            ? "text-right bg-blue-100 p-2 rounded"
+            : "text-left bg-gray-200 p-2 rounded";
+        div.textContent = message.content;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    document.getElementById('openChatBtn').onclick = function() {
+        document.getElementById('chatModal').classList.remove('hidden');
+        connectChat();
+    };
+
+    document.getElementById('closeChatBtn').onclick = function() {
+        document.getElementById('chatModal').classList.add('hidden');
+        if (stompClient) stompClient.disconnect();
+        chatConnected = false;
+        document.getElementById('chatMessages').innerHTML = '';
+    };
+
+    document.getElementById('chatForm').onsubmit = function(e) {
+        e.preventDefault();
+        const input = document.getElementById('chatInput');
+        if (input.value.trim() && stompClient && stompClient.connected) {
+            // Debug: print message to console
+            console.log('Sending message:', input.value, 'chatId:', chatId, 'senderId:', senderId, 'receiverId:', receiverId);
+            stompClient.send('/app/chat/' + chatId + '/send', {}, JSON.stringify({
+                senderId: senderId,
+                receiverId: receiverId,
+                content: input.value
+            }));
+            input.value = '';
+        } else {
+            alert("لم يتم الاتصال بنجاح بخدمة الدردشة. أعد تحميل الصفحة.");
+        }
+    };
+</c:if>
+</script>
+
+<c:if test="${sessionScope.user == null}">
+<script>
+    document.getElementById('openChatBtn').onclick = function() {
+        alert("يجب تسجيل الدخول لإرسال رسالة إلى المالك.");
+    };
+</script>
+</c:if>
 </body>
 </html>

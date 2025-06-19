@@ -64,7 +64,7 @@ public class LogRegService {
     public List<User> findUnassignedOwners() {
         List<User> allOwners = logRegRepository.findByRole("owner");
         return allOwners.stream()
-            .filter(owner -> venueRepositories.findByOwner(owner) == null)
+            .filter(owner -> venueRepositories.findByOwner(owner).isEmpty()) 
             .collect(Collectors.toList());
     }
 

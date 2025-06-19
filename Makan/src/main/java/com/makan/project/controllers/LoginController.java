@@ -59,6 +59,7 @@ public class LoginController {
 
 	    session.setAttribute("userId", reg.getId());
 	    session.setAttribute("userRole", reg.getRole());
+	    session.setAttribute("user", reg); 
 
 	    // ✅ التوجيه حسب الدور
 	    switch (reg.getRole()) {
@@ -88,7 +89,8 @@ public class LoginController {
 	    session.setAttribute("userName", user.getFirstname());
 	    session.setAttribute("userId", user.getId());
 	    session.setAttribute("userRole", user.getRole()); //  تخزين الدور في الجلسة
-
+	    session.setAttribute("user", user);
+	    
 	    switch (user.getRole()) {
         case "admin":
     	    return "redirect:/homes";  // صفحة المشرف
