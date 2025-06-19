@@ -52,6 +52,8 @@
     <div id="description" class="tabContent">
         <h2 class="text-xl font-semibold mb-2">الوصف:</h2>
         <p class="text-gray-700 leading-relaxed">${venue.description}</p>
+        <h2 class="text-xl font-semibold mb-2">العنوان الكامل:</h2>
+    <p class="text-gray-700 leading-relaxed">${venue.fullAddress}</p>
     </div>
 
     <div id="schedule" class="tabContent hidden">
