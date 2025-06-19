@@ -205,6 +205,14 @@ public class Venue {
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
+    
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 
     
 

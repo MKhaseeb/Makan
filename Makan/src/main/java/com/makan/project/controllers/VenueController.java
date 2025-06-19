@@ -49,6 +49,7 @@ public class VenueController {
     // صفحة إنشاء القاعة
     @GetMapping("/venue")
     public String createVenue(@ModelAttribute("newVenue") Venue venue, HttpSession session, Model model) {
+    	  model.addAttribute("owners", logRegService.findUnassignedOwners());
         return "createVenue.jsp";
     }
 
