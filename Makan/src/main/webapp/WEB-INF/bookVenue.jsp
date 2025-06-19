@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page session="true" %>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -43,11 +42,10 @@
             firstDay: 6,
             selectable: true,
 
-            // Show booked dates with light red background
             events: bookedDates.map(date => ({
                 start: date,
                 display: 'background',
-                color: '#fee2e2' // light red
+                color: '#fee2e2'
             })),
 
             dateClick: function (info) {
@@ -58,20 +56,17 @@
                     return;
                 }
 
-                // Remove previous selected
                 if (selectedEvent) {
                     selectedEvent.remove();
                     selectedEvent = null;
                 }
 
-                // Create a small rounded green badge as title
                 selectedEvent = calendar.addEvent({
                     start: dateStr,
                     allDay: true,
                     title: "تم التحديد",
                     display: 'list-item',
-                    textColor: '#15803d', // green-700
-                    classNames: ['custom-selected-date']
+                    textColor: '#15803d'
                 });
 
                 hiddenInput.value = dateStr;
@@ -80,6 +75,15 @@
 
         calendar.render();
     });
+
+    // modal functions
+    function showSuccessModal() {
+        document.getElementById("successModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+        document.getElementById("successModal").classList.add("hidden");
+    }
     </script>
 </head>
 
@@ -97,12 +101,10 @@
 </c:if>
 
 <div class="max-w-2xl mx-auto bg-white p-8 rounded shadow">
-    <h2 class="text-2xl font-bold mb-6 text-center">نموذج حجز القاعة</h2
-    >
+    <h2 class="text-2xl font-bold mb-6 text-center">نموذج حجز القاعة</h2>
 
     <form:form method="post" action="/book" modelAttribute="newBooking" cssClass="space-y-4">
 
-    <!-- Full Name -->
     <label class="block">
         <span class="text-gray-700">الاسم الكامل:</span>
         <input type="text" readonly
@@ -110,7 +112,6 @@
                class="mt-1 block w-full border p-2 rounded bg-gray-100"/>
     </label>
 
-    <!-- Email -->
     <label class="block">
         <span class="text-gray-700">البريد الإلكتروني:</span>
         <input type="email" readonly
@@ -118,26 +119,19 @@
                class="mt-1 block w-full border p-2 rounded bg-gray-100"/>
     </label>
 
-    <!-- Phone Number -->
     <label class="block">
         <span class="text-gray-700">رقم الهاتف:</span>
         <form:input path="phoneNumber" cssClass="mt-1 block w-full border p-2 rounded" />
         <form:errors path="phoneNumber" cssClass="text-red-600 text-sm mt-1 block" />
     </label>
 
-    <!-- Date -->
-<!-- Date (FullCalendar) -->
-<label class="block">
-    <span class="text-gray-700">تاريخ الحجز:</span>
-    <div id="calendar" class="mt-2 bg-white rounded shadow p-4"></div>
-    <form:hidden path="eventDate" id="eventDate" />
-    <form:errors path="eventDate" cssClass="text-red-600 text-sm mt-1 block" />
-</label>
+    <label class="block">
+        <span class="text-gray-700">تاريخ الحجز:</span>
+        <div id="calendar" class="mt-2 bg-white rounded shadow p-4"></div>
+        <form:hidden path="eventDate" id="eventDate" />
+        <form:errors path="eventDate" cssClass="text-red-600 text-sm mt-1 block" />
+    </label>
 
-
-    <!-- Time -->
-
-    <!-- Event Type -->
     <label class="block">
         <span class="text-gray-700">نوع المناسبة:</span>
         <form:select path="eventType" onchange="toggleOtherEventField(this.value)" cssClass="mt-1 block w-full border p-2 rounded">
@@ -151,7 +145,6 @@
         <form:errors path="eventType" cssClass="text-red-600 text-sm mt-1 block" />
     </label>
 
-    <!-- Other Event -->
     <div id="otherEventDiv" class="hidden">
         <label class="block">
             <span class="text-gray-700">حدد نوع المناسبة:</span>
@@ -160,23 +153,36 @@
         </label>
     </div>
 
-    <!-- Notes -->
     <label class="block">
         <span class="text-gray-700">ملاحظات إضافية:</span>
         <form:textarea path="note" rows="3" cssClass="mt-1 block w-full border p-2 rounded"/>
         <form:errors path="note" cssClass="text-red-600 text-sm mt-1 block" />
     </label>
-    
-	<input type="hidden" name="venueId" value="${selectedVenue.id}" />
 
-    <!-- Submit -->
+    <input type="hidden" name="venueId" value="${selectedVenue.id}" />
+
     <div class="text-center">
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">احجز الآن</button>
     </div>
 
-</form:form>
-
+    </form:form>
 </div>
+
+<!-- Success Modal -->
+<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-lg p-6 max-w-sm w-full text-center">
+    <h2 class="text-2xl font-bold mb-4 text-green-600">تم الحجز بنجاح ✅</h2>
+    <p class="mb-6">تم تسجيل حجزك وسيتم التواصل معك قريباً.</p>
+    <button onclick="closeModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">حسناً</button>
+  </div>
+</div>
+
+<!-- Show Modal if success=true in URL -->
+<c:if test="${param.success eq 'true'}">
+  <script>
+    document.addEventListener('DOMContentLoaded', showSuccessModal);
+  </script>
+</c:if>
 
 </body>
 </html>
