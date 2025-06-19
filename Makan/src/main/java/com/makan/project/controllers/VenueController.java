@@ -57,8 +57,11 @@ public class VenueController {
     public String newVenue(@Valid @ModelAttribute("newVenue") Venue venue,
                            BindingResult result,
                            @RequestParam("files") MultipartFile[] files,
+                           @RequestParam("latitude") Double latitude,
+                           @RequestParam("longitude") Double longitude,
                            HttpSession session,
                            Model model) {
+
         if (result.hasErrors()) {
             return "createVenue.jsp";
         }
@@ -82,13 +85,16 @@ public class VenueController {
                 return "createVenue.jsp";
             }
 
-            // Join URLs into one string or adjust logic if you add List<String> imageUrls to Venue model
-            venue.setImageUrl(imageUrls);// Just set the first image for now
+            venue.setImageUrl(imageUrls);
 
         } catch (IOException e) {
             result.rejectValue("imageUrl", "error.venue", "فشل رفع الصور");
             return "createVenue.jsp";
         }
+
+        // 🟢 تخزين الإحداثيات
+        venue.setLatitude(latitude);
+        venue.setLongitude(longitude);
 
         venueService.addVenue(venue);
         return "redirect:/homes";

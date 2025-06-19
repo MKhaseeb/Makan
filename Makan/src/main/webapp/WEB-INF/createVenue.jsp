@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <html lang="ar" dir="rtl">
 <head>
@@ -69,6 +71,14 @@
 
                 <div id="preview" class="mt-4 flex flex-wrap gap-4"></div>
             </div>
+            <div>
+    <label class="block mb-1 font-medium text-gray-700">حدد موقع القاعة على الخريطة:</label>
+    <div id="map" style="height: 400px;" class="rounded mb-4"></div>
+
+    <!-- الحقول المخفية التي سترسل مع النموذج -->
+    <input type="hidden" name="latitude" id="lat" />
+    <input type="hidden" name="longitude" id="lon" />
+</div>
 
             <div class="text-center">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded transition duration-300">
@@ -80,6 +90,34 @@
     </div>
 
 <script>
+var defaultLat = 31.95;
+var defaultLon = 35.93;
+
+var map = L.map('map').setView([defaultLat, defaultLon], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+var marker = L.marker([defaultLat, defaultLon], { draggable: true }).addTo(map);
+
+function updateLatLon(lat, lon) {
+    document.getElementById("lat").value = lat;
+    document.getElementById("lon").value = lon;
+}
+
+marker.on('dragend', function (e) {
+    var position = marker.getLatLng();
+    updateLatLon(position.lat, position.lng);
+});
+
+map.on('click', function (e) {
+    marker.setLatLng(e.latlng);
+    updateLatLon(e.latlng.lat, e.latlng.lng);
+});
+
+// أول قيم تلقائية
+updateLatLon(defaultLat, defaultLon);
   function addImages(event) {
     const preview = document.getElementById('preview');
     preview.innerHTML = '';
