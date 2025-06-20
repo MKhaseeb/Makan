@@ -9,11 +9,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -348,6 +352,17 @@ public class VenueController {
     
 
 
+    @PostMapping("/halls/delete")
+    public ResponseEntity<Map<String, Object>> deleteVenue(@RequestParam Long id) {
+        Map<String, Object> response = new HashMap<>();
+        boolean deleted = venueService.deleteVenue(id);
+        response.put("success", deleted);
+        return ResponseEntity.ok(response);
+    
+}
+    }
+
+
 
 
     @PostMapping("/updateDetails")
@@ -386,9 +401,4 @@ public class VenueController {
     }
 }
 
-
-
-    
-
-    
 
