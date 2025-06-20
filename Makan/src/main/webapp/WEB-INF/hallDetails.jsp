@@ -171,9 +171,9 @@
         <p class="text-gray-600 mb-6">هل أنت متأكد أنك تريد حذف هذه القاعة؟ لا يمكن التراجع عن هذا الإجراء.</p>
         <div class="flex justify-end gap-4">
             <button onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">إلغاء</button>
-<button type="button" 
-    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded" 
-    onclick="deleteVenue(${venue.id}); closeDeleteModal();">
+           <button type="button" 
+        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded" 
+        onclick="deleteVenue(${venue.id}); closeDeleteModal();">
     نعم، احذف
 </button>
         </div>
@@ -188,14 +188,6 @@
   </div>
 
 </section>
-
-
-<div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 opacity-0 pointer-events-none transition-opacity duration-300 z-50">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-  </svg>
-  <span id="toastMessage">تم حذف القاعة بنجاح</span>
-</div>
 </main>
 
 <jsp:include page="footer.jsp" />

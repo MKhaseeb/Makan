@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -83,6 +84,7 @@
                                 <td class="py-2 px-4">${b.venue.name}</td>
                                 <td class="py-2 px-4">${b.user.firstname} ${b.user.lastname}</td>
                                 <td class="py-2 px-4">${b.eventDate}</td>
+                                <td class="py-2 px-4">${b.status}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -90,42 +92,39 @@
             </div>
         </section>
 
-        <!-- قسم الرسائل الواردة من المستخدمين -->
-<!-- قسم الدردشات -->
-<section class="mt-10">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">الدردشات مع المستخدمين</h2>
-    <div class="bg-white shadow rounded overflow-x-auto">
-        <table class="min-w-full text-right">
-            <thead>
-                <tr class="bg-gray-200 text-gray-700">
-                    <th class="py-2 px-4">اسم المستخدم</th>
-                    <th class="py-2 px-4">آخر رسالة</th>
-                    <th class="py-2 px-4">آخر تحديث</th>
-                    <th class="py-2 px-4">الإجراء</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach items="${chatSummaries}" var="chat">
-                    <tr class="border-b">
-                        <td class="py-2 px-4">${chat.senderName}</td>
-                        <td class="py-2 px-4 truncate max-w-xs" title="${chat.lastMessage}">${chat.lastMessage}</td>
-                        <td class="py-2 px-4">${chat.lastTimestamp}</td>
-                        <td class="py-2 px-4">
-                            <a href="/owner/chat/${chat.chatId}" 
-                               class="text-indigo-600 font-medium hover:underline">الدردشة</a>
-                        </td>
-                    </tr>
-                </c:forEach>
-                <c:if test="${empty chatSummaries}">
-                    <tr>
-                        <td colspan="4" class="py-4 text-center text-gray-500">لا توجد دردشات بعد.</td>
-                    </tr>
-                </c:if>
-            </tbody>
-        </table>
-    </div>
-</section>
-
+        <!-- قسم الدردشات -->
+        <section class="mt-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">الدردشات مع المستخدمين</h2>
+            <div class="bg-white shadow rounded overflow-x-auto">
+                <table class="min-w-full text-right">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-700">
+                            <th class="py-2 px-4">اسم المستخدم</th>
+                            <th class="py-2 px-4">آخر رسالة</th>
+                            <th class="py-2 px-4">آخر تحديث</th>
+                            <th class="py-2 px-4">الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${chatSummaries}" var="chat">
+                            <tr class="border-b">
+                                <td class="py-2 px-4">${chat.senderName}</td>
+                                <td class="py-2 px-4 truncate max-w-xs" title="${chat.lastMessage}">${chat.lastMessage}</td>
+                                <td class="py-2 px-4">${chat.lastTimestamp}</td>
+                                <td class="py-2 px-4">
+                                    <a href="/owner/chat/${chat.chatId}" class="text-indigo-600 font-medium hover:underline">الدردشة</a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        <c:if test="${empty chatSummaries}">
+                            <tr>
+                                <td colspan="4" class="py-4 text-center text-gray-500">لا توجد دردشات بعد.</td>
+                            </tr>
+                        </c:if>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
     </main>
 </body>
