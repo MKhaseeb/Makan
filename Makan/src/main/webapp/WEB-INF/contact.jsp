@@ -80,11 +80,25 @@
                 <textarea id="message" name="message" placeholder="رسالتك" rows="6" required
                           class="w-full border border-gray-300 rounded-md p-4 text-lg placeholder-gray-400 resize-none"></textarea>
             </div>
+            
+            <div class="input-wrapper">
+    <input type="date" id="date" name="date"
+           class="w-full border border-gray-300 rounded-md py-3 pr-12 pl-4 text-lg text-gray-500 bg-gray-100 cursor-not-allowed"
+           readonly />
+    <svg xmlns="http://www.w3.org/2000/svg" class="input-icon h-6 w-6" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+</div>
+            
 
-            <button type="submit"
-                    class="w-full bg-blue-600 text-white text-xl font-semibold py-3 rounded-md shadow-md hover:bg-blue-700">
-                إرسال
-            </button>
+<button type="submit"
+    class="w-full text-white text-xl font-semibold py-3 shadow-md hover:brightness-110 transition rounded-full" 
+    style="background: linear-gradient(to right, #6366f1, #0ea5e9);">
+    إرسال
+</button>
+
         </form>
     </main>
 
@@ -103,6 +117,10 @@
     <jsp:include page="footer.jsp" />
 
     <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("date").value = today;
+    });
         document.getElementById("contactForm").addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -122,6 +140,8 @@
                 if (response.ok) {
                     document.getElementById("successPopup").classList.remove("hidden");
                     form.reset();
+                    document.getElementById("date").value = new Date().toISOString().split("T")[0];
+
                 } else {
                     alert("حدث خطأ أثناء الإرسال.");
                 }
@@ -129,7 +149,7 @@
         });
 
         function redirectHome() {
-            window.location.href = "/homes";
+            window.location.href = "/";
         }
     </script>
 

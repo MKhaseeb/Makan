@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+    .video-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400vh; /* 16:9 aspect ratio height-based */
+    height: 100vh;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+    filter: brightness(0.8);
+  }
         :root {
             --primary: #7c3aed;
             --secondary: #10b981;
@@ -69,28 +80,32 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="relative h-[85vh] flex items-center justify-center overflow-hidden">
-            <div class="absolute inset-0 bg-black/30 z-10"></div>
-            <video autoplay loop muted class="absolute w-full h-full object-cover">
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-in-front-of-flowers-10821-large.mp4" type="video/mp4">
-            </video>
-            <div class="relative z-20 text-center px-6 max-w-6xl mx-auto">
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate-fadeIn">
-                    احتفالات <span class="text-gradient">لا تُنسى</span> تبدأ من هنا
-                </h1>
-                <p class="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed">
-                    اكتشف أجمل القاعات لجميع المناسبات في جميع أنحاء فلسطين
-                </p>
-                <div class="flex gap-4 justify-center">
-                    <a href="#" class="btn-primary px-8 py-4 text-lg font-medium rounded-full text-white shadow-lg">
-                        ابدأ البحث الآن
-                    </a>
-                    <a href="#" class="px-8 py-4 text-lg font-medium rounded-full bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20 transition">
-                        كيف تعمل المنصة؟
-                    </a>
-                </div>
-            </div>
-        </section>
+      
+<section class="relative h-[85vh] flex items-center justify-center overflow-hidden">
+  <div class="absolute inset-0 bg-black/30 z-10"></div>
+
+<iframe class="video-bg"
+    src="https://www.youtube.com/embed/RDbhpvdU_88?autoplay=1&mute=1&loop=1&playlist=RDbhpvdU_88&controls=0&showinfo=0&modestbranding=1"
+    frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+</iframe>
+
+
+  <div class="relative z-20 text-center px-6 max-w-6xl mx-auto">
+    <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate-fadeIn">
+      احتفالات <span class="text-gradient">لا تُنسى</span> تبدأ من هنا
+    </h1>
+    <p class="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+      اكتشف أجمل القاعات لجميع المناسبات في جميع أنحاء فلسطين
+    </p>
+    <div class="flex gap-4 justify-center">
+      <a href="/login"  class="px-8 py-4 text-lg font-medium rounded-full text-white shadow-lg inline-block"
+   style="background: linear-gradient(to right, #6366f1, #0ea5e9);">
+        ابدأ البحث الآن
+      </a>
+    
+    </div>
+  </div>
+</section>
 
         <!-- Features Section -->
         <section class="py-20 bg-gray-50">
@@ -123,7 +138,7 @@
                         </div>
                         <h3 class="text-xl font-bold mb-3 text-gray-800">حجز آمن</h3>
                         <p class="text-gray-600">
-                            نظام حجز آمن وسهل مع تأكيد فوري ودفع إلكتروني 100% آمن
+                            نظام حجز آمن وسهل مع تأكيد فوري
                         </p>
                     </div>
                     
@@ -133,7 +148,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <h3 class="text-xl font-bold mb-3 text-gray-800">دعم متوفر 24/7</h3>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">دعم متوفر </h3>
                         <p class="text-gray-600">
                             فريق الدعم متاح على مدار الساعة لمساعدتكم في أي استفسار أو مشكلة
                         </p>
@@ -190,13 +205,8 @@
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-gray-700 font-bold">السعة: 500 شخص</span>
-                                        <span class="text-xl font-bold text-purple-600">400 ₪</span>
+                                        <span class="text-xl font-bold text-purple-600">20000 ₪</span>
                                     </div>
-                                </div>
-                                <div class="px-6 pb-6">
-                                    <a href="#" class="btn-primary w-full block text-center py-3 rounded-lg font-medium">
-                                        التفاصيل والحجز
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -231,14 +241,10 @@
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-gray-700 font-bold">السعة: 350 شخص</span>
-                                        <span class="text-xl font-bold text-purple-600">320 ₪</span>
+                                        <span class="text-xl font-bold text-purple-600">25000 ₪</span>
                                     </div>
                                 </div>
-                                <div class="px-6 pb-6">
-                                    <a href="#" class="btn-primary w-full block text-center py-3 rounded-lg font-medium">
-                                        التفاصيل والحجز
-                                    </a>
-                                </div>
+
                             </div>
                         </div>
                         
@@ -272,13 +278,8 @@
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-gray-700 font-bold">السعة: 600 شخص</span>
-                                        <span class="text-xl font-bold text-purple-600">450 ₪</span>
+                                        <span class="text-xl font-bold text-purple-600">19000 ₪</span>
                                     </div>
-                                </div>
-                                <div class="px-6 pb-6">
-                                    <a href="#" class="btn-primary w-full block text-center py-3 rounded-lg font-medium">
-                                        التفاصيل والحجز
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -310,19 +311,22 @@
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-gray-700 font-bold">السعة: 400 شخص</span>
-                                        <span class="text-xl font-bold text-purple-600">380 ₪</span>
+                                        <span class="text-xl font-bold text-purple-600">15000 ₪</span>
                                     </div>
-                                </div>
-                                <div class="px-6 pb-6">
-                                    <a href="#" class="btn-primary w-full block text-center py-3 rounded-lg font-medium">
-                                        التفاصيل والحجز
-                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="swiper-pagination mt-6"></div>
                 </div>
+<div class="px-6 pb-6">
+  <a href="#" 
+     class="w-full block text-center py-3 rounded-lg font-medium text-white shadow-md bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500 hover:brightness-110 transition">
+    المزيد ....
+  </a>
+</div>
+
+
             </div>
         </section>
 
@@ -338,7 +342,6 @@
                 
                 <div class="swiper testimonialsSwiper">
                     <div class="swiper-wrapper pb-14">
-                        <!-- Testimonial 1 -->
                         <div class="swiper-slide">
                             <div class="bg-white p-8 rounded-xl shadow-soft flex flex-col h-full">
                                 <div class="flex items-center mb-6">
@@ -364,7 +367,6 @@
                             </div>
                         </div>
                         
-                        <!-- Testimonial 2 -->
                         <div class="swiper-slide">
                             <div class="bg-white p-8 rounded-xl shadow-soft flex flex-col h-full">
                                 <div class="flex items-center mb-6">

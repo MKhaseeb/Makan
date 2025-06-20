@@ -1,9 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>رسائلك</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -15,171 +17,162 @@
     main {
       flex: 1;
     }
+    .message-card {
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      touch-action: pan-y;
+      user-select: none;
+      cursor: grab;
+    }
+    .message-card:active {
+      cursor: grabbing;
+    }
   </style>
 </head>
 
 <body class="bg-gray-100">
 
-<!-- ✅ الهيدر -->
-<header class="sticky top-0 z-50 bg-white shadow backdrop-blur-sm bg-opacity-70 border-b border-gray-200">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-3xl font-extrabold text-blue-600 select-none cursor-default">قاعتي</h1>
-    <div class="flex items-center gap-6 text-gray-700 font-medium">
-      <a href="/admin/owners" class="hover:text-blue-600 transition">إدارة المالكين</a>
-      <a href="/venue" class="hover:text-blue-600 transition">إضافة قاعة</a>
-      <a href="/message" class="hover:text-blue-600 relative transition">
-        رسالة
-        <c:if test="${hasUnreadMessages}">
-          <span class="absolute -top-1 -right-2 w-3 h-3 bg-red-600 rounded-full animate-ping"></span>
-          <span class="absolute -top-1 -right-2 w-3 h-3 bg-red-600 rounded-full"></span>
-        </c:if>
-      </a>
-    </div>
-    <form action="/venue/logout" method="post">
-      <button type="submit"
-              class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow-lg transition duration-300">
-        تسجيل الخروج
-      </button>
-    </form>
-  </div>
-</header>
+<jsp:include page="navbarlogin.jsp" />
 
-<!-- ✅ المحتوى -->
+<!-- المحتوى -->
 <main>
   <div class="max-w-4xl mx-auto p-6">
-
-    <h1 class="text-3xl font-bold text-indigo-700 mb-8">رسائلك</h1>
+    <h1 class="text-3xl font-bold text-indigo-700 mb-8">جميع الرسائل</h1>
 
     <div class="space-y-4">
       <c:forEach var="msg" items="${messages}">
-        <div class="relative overflow-hidden rounded-xl shadow bg-white" data-id="${msg.id}">
-          <div class="absolute inset-0 flex items-center justify-center bg-gray-100 text-red-600 text-2xl font-bold transition-all duration-300 delete-bg z-0">حذف</div>
-          <div class="relative z-10 p-5 cursor-pointer message-card select-none touch-pan-y">
-            <p class="mb-1"><span class="font-semibold text-gray-700">الاسم:</span> ${msg.name}</p>
-            <p class="mb-1"><span class="font-semibold text-gray-700">البريد:</span> ${msg.email}</p>
-            <p class="mb-1"><span class="font-semibold text-gray-700">الهاتف:</span> ${msg.phone}</p>
-            <p class="mb-2"><span class="font-semibold text-gray-700">الرسالة:</span> ${msg.message}</p>
-            <p class="text-sm text-gray-500">بتاريخ: ${msg.sentAt}</p>
-          </div>
-        </div>
-      </c:forEach>
+<div id="msg-${msg.id}" class="relative overflow-hidden rounded-xl shadow bg-white mb-4">
+  <div class="p-5 message-card select-none touch-pan-y rounded-xl flex items-center gap-4">
+    <!-- سهم يمين -->
+    <div class="flex-shrink-0 text-indigo-500" style="font-size: 2rem;">
+      &#8594; <!-- سهم يمين -->
     </div>
 
+    <div class="flex-grow">
+      <p class="mb-1"><span class="font-semibold text-gray-700">الاسم:</span> ${msg.name}</p>
+      <p class="mb-1"><span class="font-semibold text-gray-700">البريد:</span> ${msg.email}</p>
+      <p class="mb-1"><span class="font-semibold text-gray-700">الهاتف:</span> ${msg.phone}</p>
+      <p class="mb-2"><span class="font-semibold text-gray-700">الرسالة:</span> ${msg.message}</p>
+      <p class="text-sm text-gray-500">بتاريخ: <fmt:formatDate value="${msg.sentAtAsDate}" pattern="yyyy-MM-dd" /></p>
+    </div>
+  </div>
+
+  <!-- رسالة "اسحب لليمين للحذف" -->
+<div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none select-none text-indigo-300 font-semibold text-lg opacity-70">
+  اسحب لليمين للحذف
+</div>
+
+</div>
+
+      </c:forEach>
+    </div>
   </div>
 </main>
 
-<!-- ✅ المودال -->
-<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-  <div class="bg-white rounded-xl p-8 w-80 shadow-lg text-center">
-    <h2 class="text-2xl font-bold text-red-600 mb-4">تأكيد الحذف</h2>
-    <p class="text-gray-700 mb-6">هل تريد حذف هذه الرسالة؟</p>
-    <div class="flex justify-center gap-4">
-      <button id="confirmDelete" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">حذف</button>
-      <button id="cancelDelete" class="bg-gray-300 text-gray-800 px-5 py-2 rounded-lg hover:bg-gray-400 transition">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<!-- ✅ الفوتر الثابت -->
 <jsp:include page="/WEB-INF/footer.jsp" />
-<!-- ✅ السكربت -->
+
+<!-- صندوق الإشعار (Toast) -->
+<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-indigo-600 text-white px-5 py-3 rounded shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50"></div>
+
 <script>
-  let startX, currentCard, wrapper, bg, isDragging = false;
-  let deleteTargetWrapper = null;
+  // دالة عرض الإشعار (Toast)
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.remove('opacity-0');
+    toast.classList.add('opacity-100');
 
-  function updateBg(diffX) {
-    if (!bg) return;
-    let percent = Math.min(Math.abs(diffX) / 120, 1);
-    let r = Math.floor(248 - percent * (248 - 220));
-    let g = Math.floor(248 - percent * (248 - 38));
-    let b = Math.floor(248 - percent * (248 - 38));
-    bg.style.backgroundColor = `rgb(${r},${g},${b})`;
-  }
-
-  function resetCard() {
-    if (currentCard) {
-      currentCard.style.transition = 'transform 0.2s ease';
-      currentCard.style.transform = 'translateX(0)';
-    }
-    if (bg) bg.style.backgroundColor = '#f8f8f8';
     setTimeout(() => {
-      if (currentCard) currentCard.style.transition = '';
-    }, 200);
+      toast.classList.remove('opacity-100');
+      toast.classList.add('opacity-0');
+    }, 3000);
   }
 
-  function showDeleteModal(wrapperToDelete) {
-    deleteTargetWrapper = wrapperToDelete;
-    document.getElementById('deleteModal').classList.remove('hidden');
+  // دالة حذف رسالة من السيرفر والواجهة
+  function deleteMessage(id, cardElement) {
+    fetch('/deleteMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'id=' + encodeURIComponent(id)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        cardElement.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        cardElement.style.transform = 'translateX(100%)';
+        cardElement.style.opacity = '0';
+        setTimeout(() => {
+          const el = document.getElementById('msg-' + id);
+          if (el) el.remove();
+        }, 500);
+        showToast('تم حذف الرسالة بنجاح');
+      } else {
+        alert('فشل حذف الرسالة.');
+        cardElement.style.transform = 'translateX(0)';
+        cardElement.style.opacity = '1';
+      }
+    })
+    .catch(err => {
+      alert('حدث خطأ أثناء الحذف: ' + err.message);
+      cardElement.style.transform = 'translateX(0)';
+      cardElement.style.opacity = '1';
+    });
   }
 
-  function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.add('hidden');
-    resetCard();
-  }
-
-  function deleteCard() {
-    let id = deleteTargetWrapper.dataset.id;
-    fetch(`/deleteMessage?id=${id}`, { method: 'POST' })
-      .then(r => r.json())
-      .then(data => {
-        if (data.success) {
-          deleteTargetWrapper.remove();
-        } else {
-          alert('فشلت عملية الحذف');
-        }
-        closeDeleteModal();
-      })
-      .catch(() => {
-        alert('حدث خطأ أثناء الحذف');
-        closeDeleteModal();
-      });
-  }
-
-  function startDrag(e, cardEl) {
-    startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-    currentCard = cardEl;
-    wrapper = cardEl.closest('div[data-id]');
-    bg = wrapper.querySelector('.delete-bg');
-    isDragging = true;
-
-    document.addEventListener(e.type.includes('mouse') ? 'mousemove' : 'touchmove', onMove);
-    document.addEventListener(e.type.includes('mouse') ? 'mouseup' : 'touchend', onEnd);
-  }
-
-  function onMove(e) {
-    if (!isDragging) return;
-    let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-    let diffX = clientX - startX;
-    currentCard.style.transform = `translateX(${diffX}px)`;
-    updateBg(diffX);
-  }
-
-  function onEnd(e) {
-    if (!isDragging) return;
-    let clientX = e.type.includes('mouse') ? (e.clientX ?? startX) : e.changedTouches[0].clientX;
-    let diffX = clientX - startX;
-
-    if (Math.abs(diffX) > 100) {
-      showDeleteModal(wrapper);
-    } else {
-      resetCard();
-    }
-
-    isDragging = false;
-    document.removeEventListener(e.type.includes('mouse') ? 'mousemove' : 'touchmove', onMove);
-    document.removeEventListener(e.type.includes('mouse') ? 'mouseup' : 'touchend', onEnd);
-  }
-
-  document.querySelectorAll('.message-card').forEach(card => {
-    card.addEventListener('mousedown', e => startDrag(e, card));
-    card.addEventListener('touchstart', e => startDrag(e, card));
+  // زر الحذف بالضغط العادي
+  document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const id = this.dataset.id;
+      const card = this.closest('.message-card');
+      deleteMessage(id, card);
+    });
   });
 
-  document.getElementById('confirmDelete').addEventListener('click', deleteCard);
-  document.getElementById('cancelDelete').addEventListener('click', closeDeleteModal);
+  // التعامل مع السحب يمين لليسار (لـ RTL)
+  document.querySelectorAll('.message-card').forEach(card => {
+    let startX = 0;
+    let currentX = 0;
+    let threshold = 100; // مقدار السحب المطلوب للحذف
+    let isDragging = false;
 
-  document.addEventListener('selectstart', e => {
-    if (isDragging) e.preventDefault();
+    card.addEventListener('pointerdown', e => {
+      startX = e.clientX;
+      isDragging = true;
+      card.style.transition = 'none'; // إيقاف الانتقال أثناء السحب
+    });
+
+    card.addEventListener('pointermove', e => {
+      if (!isDragging) return;
+      currentX = e.clientX;
+      let deltaX = currentX - startX;
+
+      // لأن الصفحة RTL، السحب للحذف يكون بالسحب لليمين (deltaX موجب)
+      if (deltaX > 0) {
+        card.style.transform = `translateX(${deltaX}px)`;
+        card.style.opacity = `${1 - deltaX / 300}`;
+      }
+    });
+
+    card.addEventListener('pointerup', e => {
+      if (!isDragging) return;
+      isDragging = false;
+      let deltaX = currentX - startX;
+      card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+
+      if (deltaX > threshold) {
+        let msgId = card.closest('[id^="msg-"]').id.split('-')[1];
+        deleteMessage(msgId, card);
+      } else {
+        card.style.transform = 'translateX(0)';
+        card.style.opacity = '1';
+      }
+    });
+
+    card.addEventListener('pointercancel', () => {
+      isDragging = false;
+      card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      card.style.transform = 'translateX(0)';
+      card.style.opacity = '1';
+    });
   });
 </script>
 

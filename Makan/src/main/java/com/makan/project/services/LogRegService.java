@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import com.makan.project.models.LoginUser;
 import com.makan.project.models.User;
 import com.makan.project.repositories.LogRegRepository;
+import com.makan.project.repositories.UserRepository;
 import com.makan.project.repositories.VenueRepository;
 
 @Service
@@ -22,6 +23,13 @@ public class LogRegService {
     @Autowired
     private VenueRepository venueRepositories;
 
+    private final UserRepository userRepository;
+
+    @Autowired
+    public LogRegService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    
     public User register(User newUser, BindingResult result) {        
         Optional<User> potentialUser = logRegRepository.findByEmail(newUser.getEmail());
         if (potentialUser.isPresent())
@@ -78,10 +86,23 @@ public class LogRegService {
         return logRegRepository.findByRole(role);
     }
 
-    public void deleteUserById(Long id) {
-        logRegRepository.deleteById(id);
+//    public void deleteUserById(Long id) {
+//        logRegRepository.deleteById(id);
+//    }
+//    
+    public boolean deleteUserById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            // تأكد أن المستخدم من نوع admin أو owner
+            if ("admin".equalsIgnoreCase(user.getRole()) || "owner".equalsIgnoreCase(user.getRole())) {
+                userRepository.deleteById(id);
+                return true;
+            }
+        }
+        return false;
     }
-    
-    
+
 
 }
