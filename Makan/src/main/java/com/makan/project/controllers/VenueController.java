@@ -171,7 +171,7 @@ public class VenueController {
     }
     @GetMapping("/halls")
     public String showAllVenues(Model model) {
-        List<Venue> allVenues = venueService.getAllVenues(); // ميثود بسيطة ترجع كل القاعات
+        List<Venue> allVenues = venueService.allVenue(); // ميثود بسيطة ترجع كل القاعات
         model.addAttribute("venues", allVenues);
         return "Homeuser.jsp";
     }
@@ -352,15 +352,15 @@ public class VenueController {
     
 
 
-    @PostMapping("/halls/delete")
-    public ResponseEntity<Map<String, Object>> deleteVenue(@RequestParam Long id) {
-        Map<String, Object> response = new HashMap<>();
-        boolean deleted = venueService.deleteVenue(id);
-        response.put("success", deleted);
-        return ResponseEntity.ok(response);
-    
-}
-    }
+//    @PostMapping("/halls/delete")
+//    public ResponseEntity<Map<String, Object>> deleteVenue(@RequestParam Long id) {
+//        Map<String, Object> response = new HashMap<>();
+//        boolean deleted = venueService.deleteVenue(id);
+//        response.put("success", deleted);
+//        return ResponseEntity.ok(response);
+//    
+//}
+//    }
 
 
 
