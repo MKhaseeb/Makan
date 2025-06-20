@@ -16,4 +16,6 @@ public interface MessageRepository extends CrudRepository<Message, Long> {
     @Override
     List<Message> findAll();
 
+    List<Message> findAllByOrderBySentAtDesc();
+
 }

@@ -39,9 +39,11 @@ import com.makan.project.models.User;
 import com.makan.project.models.Venue;
 import com.makan.project.repositories.BookingRepository;
 import com.makan.project.repositories.ChatMessageRepository;
+import com.makan.project.repositories.UserRepository;
 import com.makan.project.repositories.VenueRepository;
 import com.makan.project.services.BookingService;
 import com.makan.project.services.LogRegService;
+import com.makan.project.services.UserService;
 import com.makan.project.services.VenueService;
 
 import jakarta.servlet.http.HttpSession;
@@ -67,6 +69,12 @@ public class VenueController {
     
     @Autowired
     ChatMessageRepository chatMessageRepository;
+    
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+
 
     // صفحة إنشاء القاعة
     @GetMapping("/venue")
@@ -399,6 +407,26 @@ public class VenueController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+    @PostMapping("/admin/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<String> deleteUser(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String role = payload.get("role");
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            // تحقق من أن الدور المرسل يطابق دور المستخدم في قاعدة البيانات
+            if(role != null && role.equalsIgnoreCase(user.getRole())) {
+                userRepository.deleteById(id);
+                return ResponseEntity.ok("success");
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("forbidden");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not_found");
+    }
+
 }
 
 

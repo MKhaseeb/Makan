@@ -25,8 +25,9 @@ public class MessageService {
     }
 
     public List<Message> getAllMessages() {
-        return messageRepository.findAll();
+        return messageRepository.findAllByOrderBySentAtDesc();
     }
+
 
     public boolean hasUnreadMessages() {
         // ممكن تضيف خاصية isRead للـ Message وتستخدمها هون
