@@ -99,6 +99,8 @@
             };
             stompClient.send("/app/chat/" + chatId + "/send", {}, JSON.stringify(message));
             input.value = '';
+            content: messageContent,   // your chat message text
+            senderId: currentUserId,   // your current user id
         }
     }
 
