@@ -91,6 +91,7 @@ public class VenueService {
         return venueRepositories.findAll();
     }
 
+
     public boolean deleteVenueWithRelations(Long id) {
         Venue venue = venueRepositories.findById(id).orElse(null);
         if (venue == null) {
@@ -120,14 +121,14 @@ public class VenueService {
         System.out.println("تم حذف القاعة بكل ملحقاتها");
         return true;
     }
-
-    public boolean deleteVenue(Long id) {
-        if (venueRepositories.existsById(id)) {
-            venueRepositories.deleteById(id);
-            return true;
-        }
-        return false;
-    }
-    
-        
+//
+//    public boolean deleteVenue(Long id) {
+//        if (venueRepositories.existsById(id)) {
+//            venueRepositories.deleteById(id);
+//            return true;
+//        }
+//        return false;
+//    }
+//    
+//        
 }
