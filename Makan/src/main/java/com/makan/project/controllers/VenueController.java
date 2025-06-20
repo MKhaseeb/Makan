@@ -336,15 +336,17 @@ public class VenueController {
         return "redirect:/admin/owners";
     }
 
-    @PostMapping("/admin/delete/{id}")
+
+    
+    @PostMapping("/admin/deleteVenue/{id}")
     @ResponseBody
-    public String deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteVenue(@PathVariable Long id) {
         try {
-            logRegService.deleteUserById(id);
-            return "success";
+            venueService.deleteVenue(id);
+            return ResponseEntity.ok("success");
         } catch (Exception e) {
             e.printStackTrace();
-            return "error";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
         }
     }
     

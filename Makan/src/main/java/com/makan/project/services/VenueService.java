@@ -14,6 +14,8 @@ import com.makan.project.repositories.LogRegRepository;
 import com.makan.project.repositories.RatingRepository;
 import com.makan.project.repositories.VenueRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class VenueService {
     private final VenueRepository venueRepositories;
@@ -82,7 +84,10 @@ public class VenueService {
             .collect(Collectors.toList()); // ✅ هذا هو الصح
     }
 
-    public List<Venue> getAllVenues() {
+    @Transactional
+    public List<Venue> deleteVenue(Long venueId) {
+        bookingRepository.deleteByVenueId(venueId);
+        venueRepositories.deleteById(venueId);
         return venueRepositories.findAll();
     }
 

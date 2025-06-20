@@ -5,6 +5,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
+    <meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
     <title>${venue.name} - قاعتي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -14,13 +16,13 @@
         }
         .edit-icon {
             width: 20px; height: 20px; cursor: pointer; transition: color 0.3s;
-            color: #4f46e5; /* indigo-600 */
+            color: #4f46e5;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
         .edit-icon:hover {
-            color: #3730a3; /* indigo-800 */
+            color: #3730a3;
         }
         .hidden { display: none !important; }
         #calendar {
@@ -30,7 +32,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
     </style>
-    <!-- روابط مكتبات FullCalendar, Swiper, Leaflet كما في ملفك الأصلي -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -59,35 +60,31 @@
 
 <section class="px-6 py-8 max-w-7xl mx-auto">
 
-  <!-- اسم القاعة -->
   <div class="flex items-center gap-2 mb-6">
     <h1 id="venueNameText" class="text-4xl font-bold text-gray-800">${venue.name}</h1>
     <input type="text" id="venueNameInput" class="hidden border rounded px-2 py-1 text-2xl font-bold" value="${venue.name}" />
-    
-    <c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
-      <button id="editVenueNameBtn" class="edit-icon" title="تعديل اسم القاعة" type="button" aria-label="Edit Venue Name">
-        <!-- أيقونة قلم SVG -->
+
+    <c:if test="${sessionScope.user != null && (sessionScope.user.id == venue.owner.id || sessionScope.user.role == 'admin')}">
+      <button id="editVenueNameBtn" class="edit-icon" title="Edit Venue Name" type="button" aria-label="Edit Venue Name">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3 3L20.5 5.5a2.121 2.121 0 00-3-3L9 11z"/>
         </svg>
       </button>
     </c:if>
   </div>
-
-  <!-- تبويبات -->
+  <!-- Tabs -->
   <div class="flex flex-wrap gap-4 mb-8">
     <button class="tabBtn bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md" data-tab="description">الوصف</button>
     <button class="tabBtn bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md" data-tab="schedule">المواعيد</button>
     <button class="tabBtn bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md" data-tab="pricing">الأسعار</button>
   </div>
 
-  <!-- الوصف والعنوان -->
+  <!-- Description -->
   <div id="description" class="tabContent">
     <h2 class="text-xl font-semibold mb-2 flex items-center justify-between">
       الوصف:
-      <c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
-        <button id="editVenueDescriptionBtn" class="edit-icon" title="تعديل الوصف" type="button" aria-label="Edit Description">
-          <!-- أيقونة قلم SVG -->
+      <c:if test="${sessionScope.user != null && (sessionScope.user.id == venue.owner.id || sessionScope.user.role == 'admin')}">
+        <button id="editVenueDescriptionBtn" class="edit-icon" title="Edit Description" type="button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3 3L20.5 5.5a2.121 2.121 0 00-3-3L9 11z"/>
           </svg>
@@ -99,9 +96,8 @@
 
     <h2 class="text-xl font-semibold mb-2 flex items-center justify-between mt-8">
       العنوان الكامل:
-      <c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
-        <button id="editVenueAddressBtn" class="edit-icon" title="تعديل العنوان" type="button" aria-label="Edit Full Address">
-          <!-- أيقونة قلم SVG -->
+      <c:if test="${sessionScope.user != null && (sessionScope.user.id == venue.owner.id || sessionScope.user.role == 'admin')}">
+        <button id="editVenueAddressBtn" class="edit-icon" title="Edit Address" type="button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3 3L20.5 5.5a2.121 2.121 0 00-3-3L9 11z"/>
           </svg>
@@ -112,18 +108,17 @@
     <textarea id="venueAddressInput" class="hidden w-full border rounded p-2" rows="3">${venue.fullAddress}</textarea>
   </div>
 
-  <!-- تبويب المواعيد مع التقويم -->
+  <!-- Schedule Tab -->
   <div id="schedule" class="tabContent hidden">
     <div id="calendar"></div>
   </div>
 
-  <!-- الأسعار -->
+  <!-- Pricing -->
   <div id="pricing" class="tabContent hidden">
     <h2 class="text-xl font-semibold mb-2 flex items-center justify-between">
       الأسعار:
-      <c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
-        <button id="editVenuePriceBtn" class="edit-icon" title="تعديل السعر" type="button" aria-label="Edit Price">
-          <!-- أيقونة قلم SVG -->
+      <c:if test="${sessionScope.user != null && (sessionScope.user.id == venue.owner.id || sessionScope.user.role == 'admin')}">
+        <button id="editVenuePriceBtn" class="edit-icon" title="Edit Price" type="button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3 3L20.5 5.5a2.121 2.121 0 00-3-3L9 11z"/>
           </svg>
@@ -132,17 +127,15 @@
     </h2>
     <p id="venuePriceText" class="text-gray-700 mb-1">السعر اليومي: ${venue.pricePerDay} شيكل</p>
     <input id="venuePriceInput" type="number" min="1" step="0.01" class="hidden border rounded p-2 w-32" value="${venue.pricePerDay}"/>
-
     <p class="text-gray-600">تخصيص الأسعار حسب اليوم أو المناسبة متاح عند الطلب.</p>
   </div>
-
-  <!-- الخريطة -->
+    <!-- Map -->
   <div class="mt-10">
     <h2 class="text-xl font-semibold mb-2">موقع القاعة على الخريطة:</h2>
     <div id="venueMap" style="height: 400px; width: 100%;" class="rounded shadow"></div>
   </div>
 
-  <!-- أزرار الحجز وحفظ التغييرات -->
+  <!-- Booking and Edit Buttons -->
   <div class="mt-10 flex gap-4 items-center">
     <a href="<c:url value='/book?venueId=${venue.id}'/>" id="bookingBtn" class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-md text-lg shadow">
       احجز الآن
@@ -157,6 +150,36 @@
         </svg>
         تواصل مع المالك
     </button>
+<c:if test="${sessionScope.user != null && sessionScope.user.role == 'admin'}">
+    <!-- Delete Button Trigger -->
+<button type="button"
+        onclick="openDeleteModal()"
+        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-md text-lg shadow"
+        title="حذف القاعة">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+         stroke-width="1.5" viewBox="0 0 24 24" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"/>
+    </svg>
+    حذف القاعة
+</button>
+
+<!-- Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md text-right">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">تأكيد الحذف</h2>
+        <p class="text-gray-600 mb-6">هل أنت متأكد أنك تريد حذف هذه القاعة؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <div class="flex justify-end gap-4">
+            <button onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">إلغاء</button>
+<button type="button" 
+    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded" 
+    onclick="deleteVenue(${venue.id}); closeDeleteModal();">
+    نعم، احذف
+</button>
+        </div>
+    </div>
+</div>
+</c:if>
 
     <div id="editButtonsContainer" class="hidden gap-4">
       <button id="saveChangesBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md">حفظ التغييرات</button>
@@ -165,11 +188,19 @@
   </div>
 
 </section>
+
+
+<div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+  </svg>
+  <span id="toastMessage">تم حذف القاعة بنجاح</span>
+</div>
 </main>
 
 <jsp:include page="footer.jsp" />
 
-<!-- سكربت تبويبات -->
+<!-- Tabs Logic -->
 <script>
     const tabBtns = document.querySelectorAll('.tabBtn');
     const tabContents = document.querySelectorAll('.tabContent');
@@ -188,17 +219,15 @@
         });
     });
 
-    // اجعل تبويب الوصف ظاهر افتراضياً عند تحميل الصفحة
     document.getElementById('description').classList.remove('hidden');
 </script>
 
-<!-- مكتبات FullCalendar, Swiper, Leaflet -->
+<!-- Map and Calendar Logic -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // الخريطة
     var lat = ${venue.latitude};
     var lon = ${venue.longitude};
 
@@ -214,7 +243,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .openPopup();
     }
 
-    // التقويم
     const bookedDates = [
         <c:forEach var="date" items="${bookedDates}">
             "${date}",
@@ -245,27 +273,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     calendar.render();
 
-    // السلايدر
     const swiper = new Swiper(".mySwiper", {
         loop: true,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
-        autoplay: {
-            delay: 4000,
-            disableOnInteraction: false,
-        },
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        autoplay: { delay: 4000, disableOnInteraction: false }
     });
 });
 </script>
-
-<!-- كود التعديل، فقط للمالك -->
-<c:if test="${sessionScope.user != null && sessionScope.user.id == venue.owner.id}">
+  <!-- Edit Script for Admin or Owner -->
+<c:if test="${sessionScope.user != null && (sessionScope.user.id == venue.owner.id || sessionScope.user.role == 'admin')}">
 <script>
     let isEditing = false;
 
@@ -405,99 +422,69 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("فشل الاتصال بالخادم");
         });
     });
+    
+    
 </script>
-</c:if>
 
-<!-- Chat Modal -->
-<div id="chatModal" class="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
-        <div class="flex justify-between items-center border-b p-4">
-            <h2 class="text-lg font-bold">محادثة مع المالك</h2>
-            <button id="closeChatBtn" class="text-gray-500 hover:text-gray-700">&times;</button>
-        </div>
-        <div id="chatMessages" class="p-4 h-64 overflow-y-auto space-y-2 bg-gray-50"></div>
-        <form id="chatForm" class="flex border-t p-2">
-            <input id="chatInput" type="text" placeholder="اكتب رسالتك..." class="flex-1 border rounded px-2 py-1 mr-2" autocomplete="off" />
-            <button type="submit" class="bg-blue-600 text-white px-4 py-1 rounded">إرسال</button>
-        </form>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
-<c:if test="${sessionScope.user != null}">
-    // These variables are only defined if user is logged in!
-    var chatId = "${venue.owner.id}_${sessionScope.user.id}";
-    var senderId = "${sessionScope.user.id}";
-    var receiverId = "${venue.owner.id}";
-    let stompClient = null;
-    let chatConnected = false;
+  function openDeleteModal() {
+    document.getElementById("deleteModal").classList.remove("hidden");
+  }
 
-    function connectChat() {
-        if (chatConnected) return;
-        chatConnected = true;
-        const socket = new SockJS('/chat-websocket');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            stompClient.subscribe('/topic/chat/' + chatId, function (message) {
-                showMessage(JSON.parse(message.body));
-            });
-            // Load chat history
-            fetch('/api/chat/' + chatId + '/messages')
-                .then(res => res.json())
-                .then(data => data.forEach(showMessage));
-        });
-    }
-
-    function showMessage(message) {
-        const chatMessages = document.getElementById('chatMessages');
-        const div = document.createElement('div');
-        div.className = (message.senderId == senderId) 
-            ? "text-right bg-blue-100 p-2 rounded"
-            : "text-left bg-gray-200 p-2 rounded";
-        div.textContent = message.content;
-        chatMessages.appendChild(div);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    document.getElementById('openChatBtn').onclick = function() {
-        document.getElementById('chatModal').classList.remove('hidden');
-        connectChat();
-    };
-
-    document.getElementById('closeChatBtn').onclick = function() {
-        document.getElementById('chatModal').classList.add('hidden');
-        if (stompClient) stompClient.disconnect();
-        chatConnected = false;
-        document.getElementById('chatMessages').innerHTML = '';
-    };
-
-    document.getElementById('chatForm').onsubmit = function(e) {
-        e.preventDefault();
-        const input = document.getElementById('chatInput');
-        if (input.value.trim() && stompClient && stompClient.connected) {
-            // Debug: print message to console
-            console.log('Sending message:', input.value, 'chatId:', chatId, 'senderId:', senderId, 'receiverId:', receiverId);
-            stompClient.send('/app/chat/' + chatId + '/send', {}, JSON.stringify({
-                senderId: senderId,
-                receiverId: receiverId,
-                content: input.value
-            }));
-            input.value = '';
-        } else {
-            alert("لم يتم الاتصال بنجاح بخدمة الدردشة. أعد تحميل الصفحة.");
-        }
-    };
-</c:if>
+  function closeDeleteModal() {
+    document.getElementById("deleteModal").classList.add("hidden");
+  }
 </script>
 
-<c:if test="${sessionScope.user == null}">
 <script>
-    document.getElementById('openChatBtn').onclick = function() {
-        alert("يجب تسجيل الدخول لإرسال رسالة إلى المالك.");
-    };
+  // Show the modal
+  function openDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('hidden');
+  }
+
+  // Hide the modal
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+  }
+
+  // Optional: close modal if clicked outside the modal content
+  window.addEventListener('click', function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (!modal.classList.contains('hidden') && event.target === modal) {
+      closeDeleteModal();
+    }
+  });
 </script>
+
+
+<script>
+	function deleteVenue(id) {
+		  fetch(`/admin/deleteVenue/${id}`, {
+		    method: 'POST',
+		    headers: {
+		      'Content-Type': 'application/json',
+		      'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+		    },
+		  })
+		  .then(response => response.text())
+		  .then(result => {
+		    if (result === 'success') {
+		      alert('تم حذف القاعة بنجاح');
+		      window.location.href = '/homes';
+		    } else {
+		      alert('فشل حذف القاعة');
+		    }
+		  })
+		  .catch(error => {
+		    console.error('خطأ:', error);
+		    alert('حدث خطأ أثناء حذف القاعة');
+		  });
+		}
+</script>
+
+
 </c:if>
+
 </body>
 </html>
+  
