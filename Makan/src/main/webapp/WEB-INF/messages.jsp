@@ -4,70 +4,85 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>سحب بطاقة مع Modal</title>
+  <title>رسائلك</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .message-wrapper {
-      position: relative;
-      overflow: hidden;
-    }
-    .delete-bg {
-      position: absolute;
-      inset: 0;
-      background-color: #f8f8f8;
-      color: white;
+    body {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      z-index: 0;
-      transition: background-color 0.05s linear;
+      flex-direction: column;
+      min-height: 100vh;
     }
-    .message-card {
-      position: relative;
-      background-color: white;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-      z-index: 10;
-      user-select: none;
-      touch-action: pan-y;
+    main {
+      flex: 1;
     }
   </style>
 </head>
-<body class="p-8 bg-gray-100">
 
-<h1 class="text-2xl font-bold mb-6">رسائلك</h1>
+<body class="bg-gray-100">
 
-<div class="space-y-4">
-  <c:forEach var="msg" items="${messages}">
-    <div class="message-wrapper" data-id="${msg.id}">
-      <div class="delete-bg">حذف</div>
-      <div class="message-card">
-        <p><strong>الاسم:</strong> ${msg.name}</p>
-        <p><strong>البريد:</strong> ${msg.email}</p>
-        <p><strong>الهاتف:</strong> ${msg.phone}</p>
-        <p><strong>الرسالة:</strong> ${msg.message}</p>
-        <p class="text-sm text-gray-500">بتاريخ: ${msg.sentAt}</p>
-      </div>
+<!-- ✅ الهيدر -->
+<header class="sticky top-0 z-50 bg-white shadow backdrop-blur-sm bg-opacity-70 border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-3xl font-extrabold text-blue-600 select-none cursor-default">قاعتي</h1>
+    <div class="flex items-center gap-6 text-gray-700 font-medium">
+      <a href="/admin/owners" class="hover:text-blue-600 transition">إدارة المالكين</a>
+      <a href="/venue" class="hover:text-blue-600 transition">إضافة قاعة</a>
+      <a href="/message" class="hover:text-blue-600 relative transition">
+        رسالة
+        <c:if test="${hasUnreadMessages}">
+          <span class="absolute -top-1 -right-2 w-3 h-3 bg-red-600 rounded-full animate-ping"></span>
+          <span class="absolute -top-1 -right-2 w-3 h-3 bg-red-600 rounded-full"></span>
+        </c:if>
+      </a>
     </div>
-  </c:forEach>
-</div>
+    <form action="/venue/logout" method="post">
+      <button type="submit"
+              class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow-lg transition duration-300">
+        تسجيل الخروج
+      </button>
+    </form>
+  </div>
+</header>
 
-<!-- Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50">
-  <div class="bg-white rounded-lg p-6 w-80 text-center">
-    <h2 class="text-xl font-bold mb-4">تأكيد الحذف</h2>
-    <p class="mb-6">هل تريد حذف هذه الرسالة؟</p>
+<!-- ✅ المحتوى -->
+<main>
+  <div class="max-w-4xl mx-auto p-6">
+
+    <h1 class="text-3xl font-bold text-indigo-700 mb-8">رسائلك</h1>
+
+    <div class="space-y-4">
+      <c:forEach var="msg" items="${messages}">
+        <div class="relative overflow-hidden rounded-xl shadow bg-white" data-id="${msg.id}">
+          <div class="absolute inset-0 flex items-center justify-center bg-gray-100 text-red-600 text-2xl font-bold transition-all duration-300 delete-bg z-0">حذف</div>
+          <div class="relative z-10 p-5 cursor-pointer message-card select-none touch-pan-y">
+            <p class="mb-1"><span class="font-semibold text-gray-700">الاسم:</span> ${msg.name}</p>
+            <p class="mb-1"><span class="font-semibold text-gray-700">البريد:</span> ${msg.email}</p>
+            <p class="mb-1"><span class="font-semibold text-gray-700">الهاتف:</span> ${msg.phone}</p>
+            <p class="mb-2"><span class="font-semibold text-gray-700">الرسالة:</span> ${msg.message}</p>
+            <p class="text-sm text-gray-500">بتاريخ: ${msg.sentAt}</p>
+          </div>
+        </div>
+      </c:forEach>
+    </div>
+
+  </div>
+</main>
+
+<!-- ✅ المودال -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-xl p-8 w-80 shadow-lg text-center">
+    <h2 class="text-2xl font-bold text-red-600 mb-4">تأكيد الحذف</h2>
+    <p class="text-gray-700 mb-6">هل تريد حذف هذه الرسالة؟</p>
     <div class="flex justify-center gap-4">
-      <button id="confirmDelete" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">حذف</button>
-      <button id="cancelDelete" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">إلغاء</button>
+      <button id="confirmDelete" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">حذف</button>
+      <button id="cancelDelete" class="bg-gray-300 text-gray-800 px-5 py-2 rounded-lg hover:bg-gray-400 transition">إلغاء</button>
     </div>
   </div>
 </div>
 
+<!-- ✅ الفوتر الثابت -->
+<jsp:include page="/WEB-INF/footer.jsp" />
+<!-- ✅ السكربت -->
 <script>
   let startX, currentCard, wrapper, bg, isDragging = false;
   let deleteTargetWrapper = null;
@@ -123,7 +138,7 @@
   function startDrag(e, cardEl) {
     startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
     currentCard = cardEl;
-    wrapper = cardEl.closest('.message-wrapper');
+    wrapper = cardEl.closest('div[data-id]');
     bg = wrapper.querySelector('.delete-bg');
     isDragging = true;
 
