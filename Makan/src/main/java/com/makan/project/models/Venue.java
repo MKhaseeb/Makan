@@ -213,6 +213,15 @@ public class Venue {
     public void setOwner(User owner) {
         this.owner = owner;
     }
+    private String fullAddress;
+    public String getFullAddress() {
+        return fullAddress;
+    }
+
+    public void setFullAddress(String fullAddress) {
+        this.fullAddress = fullAddress;
+    }
+
 
     
 

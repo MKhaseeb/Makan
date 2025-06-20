@@ -164,7 +164,7 @@
 
 <c:forEach var="venue" items="${venues}">
     <a data-venue href="/halls/view/${venue.id}" class="block bg-white shadow rounded-xl overflow-hidden flex hover:shadow-lg transition-shadow duration-300">
-        <img src="${venue.imageUrl}" alt="${venue.name}" class="w-48 h-48 object-cover flex-shrink-0" />
+        <img src="${venue.imageUrl[1]}" alt="${venue.name}" class="w-48 h-48 object-cover flex-shrink-0" />
         <div class="p-4 flex flex-col justify-center text-right">
             <h3 class="text-lg font-bold mb-1">${venue.name}</h3>
             <p class="text-gray-600 mb-1">المدينة: ${venue.city}</p>

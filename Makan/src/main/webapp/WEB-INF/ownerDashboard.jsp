@@ -23,22 +23,36 @@
 
         <!-- عرض القاعات التابعة لهذا المالك -->
         <section class="mb-10">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">قاعاتي</h2>
+            <h2 class="text-3xl font-bold text-indigo-800 mb-6 text-center">قاعاتي</h2>
             <c:if test="${empty venues}">
-                <p class="text-gray-600">لا توجد قاعات حالياً.</p>
+                <p class="text-center text-gray-600">لا توجد قاعات حالياً.</p>
             </c:if>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <c:forEach items="${venues}" var="v">
-                    <div class="bg-white shadow rounded overflow-hidden">
-                        <img src="${v.imageUrl}" alt="صورة القاعة" class="h-48 w-full object-cover">
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-1">${v.name}</h3>
-                            <p class="text-gray-600">${v.city} - ${v.pricePerDay} شيكل / يوم</p>
-                            <p class="text-sm text-gray-500 mt-1">السعة: ${v.capacity}</p>
-                            <div class="mt-3 flex justify-between items-center">
-                                <a href="/venue/edit?id=${v.id}" class="text-indigo-600 hover:underline">✏️ تعديل</a>
+                    <div class="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-shadow duration-300 flex flex-col">
+                        <div class="relative h-56 overflow-hidden">
+                            <c:choose>
+                                <c:when test="${not empty v.imageUrl}">
+                                    <img src="${v.imageUrl[0]}" alt="صورة القاعة" class="object-cover w-full h-full">
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="bg-gray-200 w-full h-full flex items-center justify-center text-gray-500">
+                                        لا توجد صورة
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-gray-800 mb-2">${v.name}</h3>
+                                <p class="text-gray-600 mb-1">📍 ${v.city} - ${v.village}</p>
+                                <p class="text-gray-600 mb-1">💰 ${v.pricePerDay} شيكل / اليوم</p>
+                                <p class="text-gray-600">👥 السعة: ${v.capacity} شخص</p>
+                            </div>
+                            <div class="flex justify-between items-center pt-4 border-t mt-6">
+                                <a href="/halls/view/${v.id}" class="text-indigo-600 font-medium hover:underline">✏️ تعديل</a>
                                 <form action="/venue/delete/${v.id}" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذه القاعة؟');">
-                                    <button type="submit" class="text-red-600 hover:underline">🗑️ حذف</button>
+                                    <button type="submit" class="text-red-600 font-medium hover:underline">🗑️ حذف</button>
                                 </form>
                             </div>
                         </div>
@@ -67,9 +81,8 @@
                         <c:forEach items="${bookings}" var="b">
                             <tr class="border-b">
                                 <td class="py-2 px-4">${b.venue.name}</td>
-                                <td class="py-2 px-4">${b.user.userName}</td>
-                                <td class="py-2 px-4">${b.bookingDate}</td>
-                                <td class="py-2 px-4">${b.status}</td>
+                                <td class="py-2 px-4">${b.user.firstname} ${b.user.lastname}</td>
+                                <td class="py-2 px-4">${b.eventDate}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -77,7 +90,43 @@
             </div>
         </section>
 
-    </main>
+        <!-- قسم الرسائل الواردة من المستخدمين -->
+<!-- قسم الدردشات -->
+<section class="mt-10">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">الدردشات مع المستخدمين</h2>
+    <div class="bg-white shadow rounded overflow-x-auto">
+        <table class="min-w-full text-right">
+            <thead>
+                <tr class="bg-gray-200 text-gray-700">
+                    <th class="py-2 px-4">اسم المستخدم</th>
+                    <th class="py-2 px-4">آخر رسالة</th>
+                    <th class="py-2 px-4">آخر تحديث</th>
+                    <th class="py-2 px-4">الإجراء</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach items="${chatSummaries}" var="chat">
+                    <tr class="border-b">
+                        <td class="py-2 px-4">${chat.senderName}</td>
+                        <td class="py-2 px-4 truncate max-w-xs" title="${chat.lastMessage}">${chat.lastMessage}</td>
+                        <td class="py-2 px-4">${chat.lastTimestamp}</td>
+                        <td class="py-2 px-4">
+                            <a href="/owner/chat/${chat.chatId}" 
+                               class="text-indigo-600 font-medium hover:underline">الدردشة</a>
+                        </td>
+                    </tr>
+                </c:forEach>
+                <c:if test="${empty chatSummaries}">
+                    <tr>
+                        <td colspan="4" class="py-4 text-center text-gray-500">لا توجد دردشات بعد.</td>
+                    </tr>
+                </c:if>
+            </tbody>
+        </table>
+    </div>
+</section>
 
+
+    </main>
 </body>
 </html>

@@ -12,9 +12,9 @@ public interface VenueRepository extends JpaRepository<Venue, Long> {
     List<Venue> findByNameContainingIgnoreCase(String name);
 	List<Venue> findAll();
 	List<Venue> findByNameContainingIgnoreCaseOrCityContainingIgnoreCase(String name, String city);
-
 	List<Venue> findByOwnerId(Long ownerId);
-	Venue findByOwner(User owner);
+	List<Venue> findByOwner(User owner);
+
     List<Venue> findByNameStartingWithIgnoreCase(String name);
 
 
