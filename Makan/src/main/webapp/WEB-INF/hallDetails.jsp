@@ -140,16 +140,17 @@
     <a href="<c:url value='/book?venueId=${venue.id}'/>" id="bookingBtn" class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-md text-lg shadow">
       احجز الآن
     </a>
-    <button id="openChatBtn"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-md text-lg shadow flex items-center gap-2"
-        type="button">
+<c:if test="${sessionScope.user != null && sessionScope.user.id != venue.owner.id}">
+    <a href="<c:url value='/owner/chat/${sessionScope.user.id < venue.owner.id ? sessionScope.user.id : venue.owner.id}-${sessionScope.user.id > venue.owner.id ? sessionScope.user.id : venue.owner.id}'/>"
+       class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-md text-lg shadow flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round"
                 d="M8.625 21.75a.75.75 0 01-.75-.75v-2.25A2.25 2.25 0 005.625 16.5h-2.25a.75.75 0 01-.75-.75v-10.5A2.25 2.25 0 015.625 3h12.75A2.25 2.25 0 0120.625 5.25v10.5a.75.75 0 01-.75.75h-2.25a2.25 2.25 0 00-2.25 2.25v2.25a.75.75 0 01-.75.75h-4.5z" />
         </svg>
         تواصل مع المالك
-    </button>
+    </a>
+</c:if>
 <c:if test="${sessionScope.user != null && sessionScope.user.role == 'admin'}">
     <!-- Delete Button Trigger -->
 <button type="button"
@@ -163,6 +164,7 @@
     </svg>
     حذف القاعة
 </button>
+
 
 <!-- Confirmation Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
