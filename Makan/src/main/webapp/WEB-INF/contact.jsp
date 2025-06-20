@@ -12,21 +12,18 @@
             background: #f7f9fc;
             min-height: 100vh;
         }
-        /* إضافة تأثير ناعم عند التركيز */
         input:focus, textarea:focus {
             outline: none;
             box-shadow: 0 0 8px rgba(37, 99, 235, 0.6);
             border-color: #2563eb;
             transition: all 0.3s ease;
         }
-        /* زر الإرسال */
         button {
             transition: background-color 0.3s ease;
         }
         button:hover {
             background-color: #1e40af;
         }
-        /* الأيقونات داخل الحقول */
         .input-icon {
             position: absolute;
             top: 50%;
@@ -35,7 +32,6 @@
             color: #2563eb;
             pointer-events: none;
         }
-        /* الحقول مع أيقونات */
         .input-wrapper {
             position: relative;
         }
@@ -51,7 +47,7 @@
             نحن هنا لمساعدتك! لا تتردد في إرسال استفسارك أو ملاحظاتك عبر النموذج أدناه.
         </p>
 
-        <form id="contactForm" onsubmit="return handleSubmit(event)" novalidate class="space-y-6">
+        <form id="contactForm" action="/message/send" method="post" class="space-y-6">
             
             <div class="input-wrapper">
                 <input type="text" id="name" name="name" placeholder="الاسم الكامل" required
@@ -72,9 +68,8 @@
             </div>
 
             <div class="input-wrapper">
-              <input type="tel" id="phone" name="phone" placeholder="رقم الهاتف" pattern="^(\+972|0)[0-9]{8,9}$" dir="rtl"
-       class="w-full border border-gray-300 rounded-md py-3 pr-12 pl-4 text-lg placeholder-gray-400" />
-
+                <input type="tel" id="phone" name="phone" placeholder="رقم الهاتف" pattern="^(\+972|0)[0-9]{8,9}$" dir="rtl"
+                       class="w-full border border-gray-300 rounded-md py-3 pr-12 pl-4 text-lg placeholder-gray-400" />
                 <svg xmlns="http://www.w3.org/2000/svg" class="input-icon h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
                           d="M3 5h2l3.5 7-1.5 3h11v-3l-3-5H3z"/>
@@ -86,30 +81,55 @@
                           class="w-full border border-gray-300 rounded-md p-4 text-lg placeholder-gray-400 resize-none"></textarea>
             </div>
 
-            <button type="submit" class="w-full bg-blue-600 text-white text-xl font-semibold py-3 rounded-md shadow-md hover:bg-blue-700">
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white text-xl font-semibold py-3 rounded-md shadow-md hover:bg-blue-700">
                 إرسال
             </button>
         </form>
     </main>
 
+    <!-- Popup Modal -->
+    <div id="successPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-8 text-center max-w-sm">
+            <h2 class="text-2xl font-bold text-blue-700 mb-4">تم إرسال الرسالة بنجاح!</h2>
+            <p class="text-gray-600 mb-6">شكرًا لتواصلك معنا، سنرد عليك في أقرب وقت.</p>
+            <button onclick="redirectHome()"
+                    class="bg-blue-600 text-white px-6 py-2 rounded-md text-lg hover:bg-blue-700">
+                الرجوع للرئيسية
+            </button>
+        </div>
+    </div>
+
     <jsp:include page="footer.jsp" />
 
     <script>
-        function handleSubmit(event) {
+        document.getElementById("contactForm").addEventListener("submit", function(event) {
             event.preventDefault();
 
             const form = event.target;
 
             if (!form.checkValidity()) {
                 form.reportValidity();
-                return false;
+                return;
             }
 
-            // هنا يمكنك إضافة إرسال البيانات عبر AJAX أو التعامل مع السيرفر
+            // إرسال البيانات عبر AJAX بدلاً من الفورم العادي (اختياري)
+            const formData = new FormData(form);
+            fetch("/message/send", {
+                method: "POST",
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    document.getElementById("successPopup").classList.remove("hidden");
+                    form.reset();
+                } else {
+                    alert("حدث خطأ أثناء الإرسال.");
+                }
+            });
+        });
 
-            alert("تم إرسال الرسالة بنجاح! شكرًا لتواصلك معنا.");
-            form.reset();
-            return false;
+        function redirectHome() {
+            window.location.href = "/homes";
         }
     </script>
 

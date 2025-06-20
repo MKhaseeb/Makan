@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -109,14 +110,23 @@
 </head>
 <body>
 
-
 <header class="sticky top-0 z-50 bg-white shadow">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <h1 id="site-title" class="select-none cursor-default text-2xl font-bold">قاعتي</h1>
 
-        <a href="/admin/owners" tabindex="0" class="mr-4 hover:text-blue-600">إدارة المالكين</a>
-        <a href="/venue" tabindex="0" class="mr-4 hover:text-blue-600">إضافة قاعة</a>
-    
+    <div class="flex items-center gap-6">
+      <a href="/admin/owners" tabindex="0" class="hover:text-blue-600">إدارة المالكين</a>
+      <a href="/venue" tabindex="0" class="hover:text-blue-600">إضافة قاعة</a>
+
+      <a href="/message" tabindex="0" class="hover:text-blue-600 relative">
+        رسالة
+        <c:if test="${hasUnreadMessages}">
+          <span class="absolute -top-1 -right-2 w-3 h-3 bg-red-600 rounded-full animate-ping"></span>
+          <span class="absolute -top-1 -right-2 w-3 h-3 bg-red-600 rounded-full"></span>
+        </c:if>
+      </a>
+    </div>
+
     <nav class="flex items-center gap-8 font-medium">
       <form action="/venue/logout" method="post">
         <button type="submit"

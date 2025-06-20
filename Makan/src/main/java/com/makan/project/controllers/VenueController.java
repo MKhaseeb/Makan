@@ -6,10 +6,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -307,13 +310,12 @@ public class VenueController {
         }
     }
 
-
-
-
-
-
-
-    
-
+    @PostMapping("/halls/delete")
+    public ResponseEntity<Map<String, Object>> deleteVenue(@RequestParam Long id) {
+        Map<String, Object> response = new HashMap<>();
+        boolean deleted = venueService.deleteVenue(id);
+        response.put("success", deleted);
+        return ResponseEntity.ok(response);
     
 }
+    }
