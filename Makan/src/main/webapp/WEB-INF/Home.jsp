@@ -1,45 +1,58 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
     <meta charset="UTF-8" />
     <title>قاعتي - بحث القاعات</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // تصفية القاعات بناءً على النص في مربع البحث
-        function filterVenues() {
-            let searchQuery = document.getElementById("searchInput").value.toLowerCase();
-            let venues = document.querySelectorAll(".venue-item");
-
-            venues.forEach(function(venue) {
-                let name = venue.querySelector(".venue-name").textContent.toLowerCase();
-                let city = venue.querySelector(".venue-city").textContent.toLowerCase();
-                let village = venue.querySelector(".venue-village").textContent.toLowerCase();
-
-                if (name.includes(searchQuery) || city.includes(searchQuery) || village.includes(searchQuery)) {
-                    venue.style.display = "block"; // عرض العنصر
-                } else {
-                    venue.style.display = "none"; // إخفاء العنصر
-                }
-            });
-        }
-    </script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: #fdfcf9;
+            background: linear-gradient(to bottom right, #f3e8ff, #e0f2fe);
         }
-        input, select {
-            outline: none;
+        .venue-card:hover {
+            transform: translateY(-6px) scale(1.01);
+        }
+        .venue-card {
+            transition: all 0.4s ease;
+        }
+        @keyframes fade-in-up {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fade-in-up 0.8s ease-out both;
         }
     </style>
+    <script>
+        function filterVenues() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const cityFilter = document.getElementById("cityFilter").value.toLowerCase();
+            const villageFilter = document.getElementById("villageFilter").value.toLowerCase();
+            const maxPrice = parseFloat(document.getElementById("maxPriceFilter").value.replace(/,/g, ""));
+            const minCapacity = parseInt(document.getElementById("minCapacityFilter").value);
 
+            document.querySelectorAll(".venue-item").forEach(item => {
+                const name = item.querySelector(".venue-name").textContent.toLowerCase();
+                const city = item.querySelector(".venue-city").textContent.toLowerCase();
+                const village = item.querySelector(".venue-village").textContent.toLowerCase();
+                const price = parseFloat(item.querySelector(".venue-price")?.textContent.replace(/[^\d]/g, "") || "0");
+                const capacity = parseInt(item.querySelector(".venue-capacity")?.textContent.replace(/[^\d]/g, "") || "0");
+
+                const matchesSearch = name.includes(query) || city.includes(query) || village.includes(query);
+                const matchesCity = !cityFilter || city.includes(cityFilter);
+                const matchesVillage = !villageFilter || village.includes(villageFilter);
+                const matchesPrice = isNaN(maxPrice) || price <= maxPrice;
+                const matchesCapacity = isNaN(minCapacity) || capacity >= minCapacity;
+
+                item.style.display = (matchesSearch && matchesCity && matchesVillage && matchesPrice && matchesCapacity) ? "block" : "none";
+            });
+        }
+    </script>
 </head>
 
 <body class="min-h-screen flex flex-col">
@@ -47,87 +60,87 @@
 <jsp:include page="navbarlogin.jsp" />
 
 <main class="flex-grow">
-    <div class="max-w-7xl mx-auto px-6 mt-8">
-        <input id="searchInput" type="text" name="search" placeholder="🔍 بحث عن قاعة" 
-               class="w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-400" 
+    <div class="text-center py-10">
+        <h1 class="text-5xl font-bold text-indigo-800">اكتشف قاعة أحلامك</h1>
+        <p class="text-lg text-gray-500 mt-3">✨ قاعات فاخرة للمناسبات الاستثنائية ✨</p>
+    </div>
+
+    <div class="max-w-screen-xl mx-auto px-10">
+        <input id="searchInput" type="text" name="search" placeholder="🔍 بحث عن قاعة"
+               class="w-full p-5 rounded-xl border border-gray-300 shadow focus:ring-3 focus:ring-indigo-500 text-lg"
                oninput="filterVenues()" />
     </div>
 
-    <div class="max-w-7xl mx-auto px-6 mt-10 flex gap-8">
+    <div class="max-w-screen-xl mx-auto px-10 mt-12 flex flex-col lg:flex-row gap-10">
 
-        <form action="/halls/filter" method="get" class="w-1/3 bg-white p-6 rounded-xl shadow">
-            <h2 class="text-xl font-bold mb-4">فلاتر البحث</h2>
+        <!-- الفلاتر -->
+        <aside class="w-full lg:w-1/3">
+            <div class="sticky top-6 bg-white p-8 rounded-3xl shadow-xl border border-gray-200 space-y-6">
+                <h2 class="text-3xl font-bold text-indigo-700 mb-4">🎯 فلاتر البحث</h2>
 
-            <label class="block mb-2 text-gray-700">المدينة:</label>
-            <select name="city" class="w-full mb-4 p-2 rounded-md border" onchange="filterVenues()">
-                <option value="">اختر مدينة</option>
-                <option value="القدس">القدس</option>
-                <option value="رام الله">رام الله</option>
-                <option value="البيرة">البيرة</option>
-                <option value="نابلس">نابلس</option>
-                <option value="الخليل">الخليل</option>
-                <option value="بيت لحم">بيت لحم</option>
-                <option value="طولكرم">طولكرم</option>
-                <option value="قلقيلية">قلقيلية</option>
-                <option value="سلفيت">سلفيت</option>
-                <option value="جنين">جنين</option>
-                <option value="أريحا">أريحا</option>
-                <option value="طوباس">طوباس</option>
-                <option value="غزة">غزة</option>
-                <option value="خانيونس">خانيونس</option>
-                <option value="رفح">رفح</option>
-                <option value="دير البلح">دير البلح</option>
-                <option value="جباليا">جباليا</option>
-                <option value="الزهراء">الزهراء</option>
-                <option value="بيت حانون">بيت حانون</option>
-                <option value="بيت لاهيا">بيت لاهيا</option>
-            </select>
+                <label class="block text-gray-800 font-semibold text-lg">المدينة:</label>
+                <select id="cityFilter" class="w-full p-3 rounded-lg border border-gray-300 text-lg" onchange="filterVenues()">
+                    <option value="">اختر مدينة</option>
+                    <option value="القدس">القدس</option>
+                    <option value="رام الله">رام الله</option>
+                    <option value="البيرة">البيرة</option>
+                    <option value="نابلس">نابلس</option>
+                    <option value="الخليل">الخليل</option>
+                    <option value="بيت لحم">بيت لحم</option>
+                    <option value="طولكرم">طولكرم</option>
+                    <option value="قلقيلية">قلقيلية</option>
+                    <option value="سلفيت">سلفيت</option>
+                    <option value="جنين">جنين</option>
+                    <option value="أريحا">أريحا</option>
+                    <option value="طوباس">طوباس</option>
+                    <option value="غزة">غزة</option>
+                    <option value="خانيونس">خانيونس</option>
+                    <option value="رفح">رفح</option>
+                    <option value="دير البلح">دير البلح</option>
+                    <option value="جباليا">جباليا</option>
+                    <option value="الزهراء">الزهراء</option>
+                    <option value="بيت حانون">بيت حانون</option>
+                    <option value="بيت لاهيا">بيت لاهيا</option>
+                </select>
 
-            <label class="block mb-2 text-gray-700">القرية:</label>
-            <input type="text" name="village" placeholder="مثال: بيتونيا" class="w-full mb-4 p-2 rounded-md border" oninput="filterVenues()" />
+                <label class="block text-gray-800 font-semibold text-lg">القرية/البلدة:</label>
+                <input type="text" id="villageFilter" placeholder="مثال: بيتونيا"
+                       class="w-full p-3 rounded-lg border border-gray-300 text-lg" oninput="filterVenues()" />
 
-            <label class="block mb-2 text-gray-700">السعر الأقصى:</label>
-            <input type="number" name="maxPrice" class="w-full mb-4 p-2 rounded-md border" oninput="filterVenues()" />
+                <label class="block text-gray-800 font-semibold text-lg">السعر الأقصى:</label>
+                <input type="number" id="maxPriceFilter"
+                       class="w-full p-3 rounded-lg border border-gray-300 text-lg" oninput="filterVenues()" />
 
-            <label class="block mb-2 text-gray-700">الحد الأدنى للسعة:</label>
-            <input type="number" name="minCapacity" class="w-full mb-6 p-2 rounded-md border" oninput="filterVenues()" />
+                <label class="block text-gray-800 font-semibold text-lg">الحد الأدنى للسعة:</label>
+                <input type="number" id="minCapacityFilter"
+                       class="w-full p-3 rounded-lg border border-gray-300 text-lg" oninput="filterVenues()" />
+            </div>
+        </aside>
 
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">
-                فلترة
-            </button>
-        </form>
-
-        <div class="w-2/3 flex flex-col gap-6">
-
+        <!-- القاعات -->
+        <section class="w-full lg:w-2/3 grid md:grid-cols-2 gap-10">
             <c:forEach var="venue" items="${venues}">
-                <div class="venue-item">
-                    <a href="/halls/view/${venue.id}" class="block bg-white shadow rounded-xl overflow-hidden flex hover:shadow-lg transition-shadow duration-300">
-                        <img src="${venue.imageUrl[0]}" alt="${venue.name}" class="w-48 h-48 object-cover flex-shrink-0" />
-                        <div class="p-4 flex flex-col justify-center text-right">
-                            <h3 class="text-lg font-bold mb-1 venue-name">${venue.name}</h3>
-                            <p class="text-gray-600 mb-1 venue-city">المدينة: ${venue.city}</p>
-                            <p class="text-gray-600 mb-1 venue-village">القرية: ${venue.village}</p>
-                            <p class="text-gray-600 mb-1">الوصف: ${venue.description}</p>
-                            <p class="text-gray-600 mb-1">السعر: ${venue.pricePerDay} شيكل</p>
-                            <p class="text-gray-600">السعة: ${venue.capacity} شخص</p>
+                <div class="venue-item fade-in-up bg-white rounded-3xl shadow-xl overflow-hidden venue-card">
+                    <a href="/halls/view/${venue.id}" class="block">
+                        <img src="${venue.imageUrl[1]}" alt="${venue.name}" class="w-full h-64 object-cover rounded-t-3xl" />
+                        <div class="p-6 text-right">
+                            <h3 class="text-3xl font-bold text-indigo-700 venue-name mb-3">${venue.name}</h3>
+                            <p class="text-lg text-gray-700 venue-city mb-1">📍 المدينة: ${venue.city}</p>
+                            <p class="text-lg text-gray-700 venue-village mb-3">🏡 القرية: ${venue.village}</p>
+                            <p class="text-base text-gray-600 mb-4">💬 ${venue.description}</p>
+                            <p class="text-green-700 font-semibold text-lg venue-price mb-1">
+                                💰 <fmt:formatNumber value="${venue.pricePerDay}" type="number" maxFractionDigits="0" /> شيكل
+                            </p>
+                            <p class="text-blue-700 text-lg venue-capacity">👥 السعة: ${venue.capacity} شخص</p>
                         </div>
                     </a>
                 </div>
             </c:forEach>
-
-        </div>
-
+        </section>
     </div>
-
 </main>
 
 <jsp:include page="footer.jsp" />
-<script>
-  function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-</script>
 
 </body>
-
 </html>

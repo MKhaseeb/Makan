@@ -26,14 +26,15 @@
   <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-right">
     <div>
       <h4 class="text-xl font-semibold mb-2 text-white" data-i18n="site_title">قاعتي</h4>
-      <p class="text-xs leading-tight" data-i18n="footer_about">
-        منصة رائدة لحجز القاعات في فلسطين، نقدم لك أفضل الخيارات والخدمات.
-      </p>
+<p class="text-xs leading-tight" data-i18n="footer_about">
+  قاعتي هي منصتك الذكية لحجز القاعات في فلسطين. نوفّر لك أفضل الأماكن بأسعار منافسة،  
+  وخدمات مميزة لتجربة حجز سهلة وسريعة. مناسبتك تبدأ من هنا!
+</p>
+
     </div>
     <div>
       <h4 class="text-xl font-semibold mb-2 text-white" data-i18n="quick_links">روابط سريعة</h4>
       <ul class="space-y-2 text-sm">
-        <li><a href="index.jsp" class="hover:text-blue-400 transition duration-200 font-medium" data-i18n="home">الرئيسية</a></li>
         <li><a href="/about" class="hover:text-blue-400 transition duration-200 font-medium" data-i18n="about">نبذة عنا</a></li>
         <li><a href="/terms" class="hover:text-blue-400 transition duration-200 font-medium" data-i18n="terms">الأحكام والشروط</a></li>
         <li><a href="/contactus" class="hover:text-blue-400 transition duration-200 font-medium" data-i18n="payment">تواصل معنا</a></li>
@@ -42,27 +43,21 @@
     </div>
     <div>
       <h4 class="text-xl font-semibold mb-2 text-white" data-i18n="contact_us">تواصل معنا</h4>
-      <ul class="space-y-3 text-xs mb-4">
+           <ul class="text-sm space-y-3">
         <li class="flex items-center justify-center md:justify-start gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h2l3.5 7-1.5 3h11v-3l-3-5H3z" />
-          </svg>
-          <span data-i18n="phone">هاتف: 00970 525 789</span>
+          <span class="text-blue-400">📞</span>
+          <span>00970 525 789</span>
         </li>
         <li class="flex items-center justify-center md:justify-start gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16 12h-4m0 0v-4m0 4v4m6 4h-6m-6-2a9 9 0 1 1 18 0v3H3v-3z" />
-          </svg>
-          <span data-i18n="email">البريد الإلكتروني: info@qa3ti.ps</span>
+          <span class="text-blue-400">📧</span>
+          <span>info@qa3ti.ps</span>
         </li>
         <li class="flex items-center justify-center md:justify-start gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 0 1-2.828 0l-4.243-4.243a8 8 0 1 1 11.314 0z" />
-            <circle cx="12" cy="12" r="3" stroke="none"/>
-          </svg>
-          <span data-i18n="address">العنوان: فلسطين</span>
+          <span class="text-blue-400">📍</span>
+          <span>فلسطين</span>
         </li>
       </ul>
+
       <!-- روابط التواصل الاجتماعي -->
       <div class="flex justify-center md:justify-start space-x-6 rtl:space-x-reverse">
         <a href="https://www.facebook.com/qa3ti" target="_blank" rel="noopener" aria-label="فيسبوك" class="social-icon text-gray-300 hover:text-blue-600">
