@@ -59,6 +59,8 @@ public class Venue {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedAt;
 
+    
+    private Double avgRating;
 
     public List<Servicee> getServicees() {
         return servicees;
@@ -220,6 +222,14 @@ public class Venue {
 
     public void setFullAddress(String fullAddress) {
         this.fullAddress = fullAddress;
+    }
+    
+    public Double getAvgRating() {
+        return avgRating != null ? avgRating : 0.0;
+    }
+
+    public void setAvgRating(Double avgRating) {
+        this.avgRating = avgRating;
     }
 
 

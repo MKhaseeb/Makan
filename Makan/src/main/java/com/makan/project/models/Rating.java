@@ -1,19 +1,16 @@
 package com.makan.project.models;
 
-
-
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.persistence.*; // or use javax.persistence.* depending on your setup
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "ratings")
 public class Rating {
-	
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,62 +27,34 @@ public class Rating {
     private String comment;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "venue_id", nullable =  false)
+    @JoinColumn(name = "venue_id", nullable = false)
     private Venue venue;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Venue getVenue() {
-        return venue;
-    }
-
-    public void setVenue(Venue venue) {
-        this.venue = venue;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
-    }
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
-    // Constructors
-    public Rating() {}
+    
+    
 
-    public Rating(Long id, int venueId, String userName, int score, String comment) {
-        this.id = id;
-        this.userName = userName;
-        this.score = score;
-        this.comment = comment;
+    public Rating() {
     }
 
-    // Getters & Setters
+    // Automatically set createdAt before persisting
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
+
+    // --- Getters & Setters ---
+
     public Long getId() {
         return id;
     }
@@ -93,7 +62,6 @@ public class Rating {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getUserName() {
         return userName;
@@ -119,6 +87,36 @@ public class Rating {
         this.comment = comment;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    // no setter for createdAt, it set automatically
+
+    public Venue getVenue() {
+        return venue;
+    }
+
+    public void setVenue(Venue venue) {
+        this.venue = venue;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
     @Override
     public String toString() {
         return "Rating{" +
@@ -126,6 +124,11 @@ public class Rating {
                 ", userName='" + userName + '\'' +
                 ", score=" + score +
                 ", comment='" + comment + '\'' +
+                ", createdAt=" + createdAt +
                 '}';
+    }
+  
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }
