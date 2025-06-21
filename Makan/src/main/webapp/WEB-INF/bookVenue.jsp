@@ -30,33 +30,40 @@
       const hiddenInput = document.getElementById('eventDate');
 
       const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        height: 400,
-        locale: 'ar',
-        firstDay: 6,
-        selectable: true,
-        events: bookedDates.map(date => ({
-          start: date,
-          display: 'background',
-          color: '#fee2e2'
-        })),
-        dateClick: function (info) {
-          const dateStr = info.dateStr;
-          if (bookedDates.includes(dateStr)) {
-            alert("هذا التاريخ محجوز بالفعل.");
-            return;
-          }
-          if (selectedEvent) selectedEvent.remove();
-          selectedEvent = calendar.addEvent({
-            start: dateStr,
-            allDay: true,
-            title: "تم التحديد",
-            display: 'list-item',
-            textColor: '#15803d'
-          });
-          hiddenInput.value = dateStr;
-        }
-      });
+    	  initialView: 'dayGridMonth',
+    	  height: 400,
+    	  locale: 'ar',
+    	  firstDay: 6,
+    	  selectable: true,
+    	  validRange: {
+    	    start: new Date().toISOString().split('T')[0]  // ⬅️ restrict to today and future
+    	  },
+    	  events: bookedDates.map(date => ({
+    		  title: "محجوز",
+    		  start: date,
+    		  allDay: true,
+    		  color: '#dc2626',       // red background
+    		  textColor: '#ffffff',   // white text
+    		  display: 'block'
+    		})),
+
+    	  dateClick: function (info) {
+    	    const dateStr = info.dateStr;
+    	    if (bookedDates.includes(dateStr)) {
+    	      alert("هذا التاريخ محجوز بالفعل.");
+    	      return;
+    	    }
+    	    if (selectedEvent) selectedEvent.remove();
+    	    selectedEvent = calendar.addEvent({
+    	      start: dateStr,
+    	      allDay: true,
+    	      title: "تم التحديد",
+    	      display: 'list-item',
+    	      textColor: '#15803d'
+    	    });
+    	    hiddenInput.value = dateStr;
+    	  }
+    	});
 
       calendar.render();
     });
@@ -89,6 +96,8 @@
 </head>
 
 <body >
+
+
 <c:choose>
     <c:when test="${user.role == 'admin'}">
     <jsp:include page="navbarlogin.jsp" />
@@ -97,7 +106,6 @@
         <jsp:include page="navbaruser.jsp" />
     </c:otherwise>
 </c:choose>
-
 
 <c:if test="${not empty selectedVenue}">
   <div class="p-4 bg-blue-50 rounded mb-4 shadow">
@@ -109,6 +117,8 @@
     <input type="hidden" name="venue.id" value="${selectedVenue.id}" />
   </div>
 </c:if>
+
+
 
 <div class="max-w-2xl mx-auto bg-white p-8 rounded shadow">
   <h2 class="text-2xl font-bold mb-6 text-center">نموذج حجز القاعة</h2>
@@ -167,9 +177,18 @@
 
     <input type="hidden" name="venueId" value="${selectedVenue.id}" />
 
-    <div class="text-center">
-      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">احجز الآن</button>
-    </div>
+<div class="text-center">
+  <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">احجز الآن</button>
+</div>
+
+<div class="text-center mt-4">
+  <c:if test="${user.role == 'owner'}">
+    <a href="/owner/dashboard" class="inline-block bg-gray-200 text-black px-6 py-2 rounded hover:bg-gray-300">
+      رجوع
+    </a>
+  </c:if>
+</div>
+
 
   </form:form>
 </div>
