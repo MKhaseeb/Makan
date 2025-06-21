@@ -181,5 +181,11 @@ public class Booking {
 	    public void setStatus(String status) {
 	        this.status = status;
 	    }
+	    
+	    public Date getEventDateAsDate() {
+	        if (this.eventDate == null) return null;
+	        return java.sql.Date.valueOf(this.eventDate);
+	    }
+
 
 }

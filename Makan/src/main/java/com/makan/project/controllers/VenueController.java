@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.makan.project.models.Booking;
 import com.makan.project.models.ChatMessage;
@@ -167,8 +168,15 @@ public class VenueController {
 
         List<Venue> venues = venueService.allVenue();
         model.addAttribute("venues", venues);
+
+        // جلب الحجوزات الخاصة بالمستخدم
+        List<Booking> bookings = bookingService.findByUserId(userId);
+        model.addAttribute("bookings", bookings);
+
         return "Home.jsp";
     }
+
+
 
     // الصفحة الرئيسية العامة
     @GetMapping("/")
@@ -241,6 +249,48 @@ public class VenueController {
         return "bookVenue.jsp";
     }
     
+   
+//    @PostMapping("/book")
+//    public String saveBooking(
+//        @Valid @ModelAttribute("newBooking") Booking booking,
+//        BindingResult result,
+//        HttpSession session,
+//        Model model,
+//        RedirectAttributes redirectAttributes, 
+//        @RequestParam("venueId") Long venueId) {
+//
+//        Long userId = (Long) session.getAttribute("userId");
+//        if (userId == null) {
+//            return "redirect:/";
+//        }
+//
+//        // If there are validation errors, re-render the form
+//        if (result.hasErrors()) {
+//            model.addAttribute("venues", venueService.allVenue());
+//            model.addAttribute("user", logRegService.findUserById(userId));
+//            model.addAttribute("selectedVenue", booking.getVenue()); // re-show selected venue
+//            return "bookVenue.jsp";
+//        }
+//
+//        // Set user and venue (in case venue only came via hidden input)
+//        User user = logRegService.findUserById(userId);
+//        booking.setUser(user);
+//        booking.setVenue(venueService.getVenueById(venueId));
+//
+//        // Save the booking
+//        bookingService.addBooking(booking);
+//
+//        // ✅ Redirect based on role
+//        if ("owner".equals(user.getRole())) {
+//        	redirectAttributes.addFlashAttribute("bookedVenueName", booking.getVenue().getName());
+//        	redirectAttributes.addFlashAttribute("bookedDate", booking.getEventDate());
+//            return "redirect:/owner/dashboard";
+//
+//        }
+//
+//        return "redirect:/halls/view/" + venueId;
+//    }
+//    
     
     @PostMapping("/book")
     public String saveBooking(
@@ -248,6 +298,7 @@ public class VenueController {
         BindingResult result,
         HttpSession session,
         Model model,
+        RedirectAttributes redirectAttributes, 
         @RequestParam("venueId") Long venueId) {
 
         Long userId = (Long) session.getAttribute("userId");
@@ -255,30 +306,30 @@ public class VenueController {
             return "redirect:/";
         }
 
-        // If there are validation errors, re-render the form
         if (result.hasErrors()) {
             model.addAttribute("venues", venueService.allVenue());
             model.addAttribute("user", logRegService.findUserById(userId));
-            model.addAttribute("selectedVenue", booking.getVenue()); // re-show selected venue
+            model.addAttribute("selectedVenue", booking.getVenue());
             return "bookVenue.jsp";
         }
 
-        // Set user and venue (in case venue only came via hidden input)
         User user = logRegService.findUserById(userId);
         booking.setUser(user);
         booking.setVenue(venueService.getVenueById(venueId));
 
-        // Save the booking
         bookingService.addBooking(booking);
 
-        // ✅ Redirect based on role
+        // ✅ أضف Flash Attributes هنا قبل أي return
+        redirectAttributes.addFlashAttribute("bookedVenueName", booking.getVenue().getName());
+        redirectAttributes.addFlashAttribute("bookedDate", booking.getEventDate());
+
         if ("owner".equals(user.getRole())) {
             return "redirect:/owner/dashboard";
         }
 
-        return "redirect:/halls/view/" + venueId;
+        return "redirect:/user/home" ;
     }
-    
+
     @PostMapping("/booking/delete")
     public String deleteBooking(@RequestParam("bookingId") Long bookingId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
@@ -362,7 +413,7 @@ public class VenueController {
 
 
     
-    @GetMapping("user/home")
+    @GetMapping("/user/home")
     public String homeuser(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
@@ -371,8 +422,14 @@ public class VenueController {
 
         List<Venue> venues = venueService.allVenue();
         model.addAttribute("venues", venues);
+
+        // أضف هذه السطور لجلب الحجوزات وإرسالها
+        List<Booking> bookings = bookingService.findByUserId(userId);
+        model.addAttribute("bookings", bookings);
+
         return "Homeuser.jsp";
     }
+
 
     @GetMapping("/admin/owners")
     public String showAdminPage(Model model) {

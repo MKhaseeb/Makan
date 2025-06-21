@@ -44,4 +44,12 @@ public class BookingService {
         return bookingRepository.findById(bookingId);
     }
 
+
+    public BookingService(BookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
+    }
+
+    public List<Booking> findByUserId(Long userId) {
+        return bookingRepository.findByUserId(userId);
+    }
 }
