@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.makan.project.models.Booking;
 import com.makan.project.models.ChatMessage;
+import com.makan.project.models.ChatSummary;
 import com.makan.project.models.User;
 
 import com.makan.project.models.Venue;
@@ -42,6 +43,7 @@ import com.makan.project.repositories.ChatMessageRepository;
 import com.makan.project.repositories.UserRepository;
 import com.makan.project.repositories.VenueRepository;
 import com.makan.project.services.BookingService;
+import com.makan.project.services.ChatMessageService;
 import com.makan.project.services.LogRegService;
 import com.makan.project.services.UserService;
 import com.makan.project.services.VenueService;
@@ -57,6 +59,9 @@ public class VenueController {
     
     @Autowired
     VenueRepository venueRepository;
+    
+    @Autowired
+    private ChatMessageService chatMessageService;  
     
     @Autowired
     BookingRepository bookingRepository;
@@ -264,17 +269,68 @@ public class VenueController {
 
         // Save the booking
         bookingService.addBooking(booking);
+        return "redirect:/halls/view/" + venueId;
+    }        
+    
+    @PostMapping("/booking/delete")
+    public String deleteBooking(@RequestParam("bookingId") Long bookingId, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/";
+        }
 
-        // Redirect to confirmation or homepage
-		return "redirect:/book?success=true";
-        
+        Optional<Booking> bookingOpt = bookingService.findById(bookingId);
+        if (bookingOpt.isPresent()) {
+            Booking booking = bookingOpt.get();
+            Long ownerId = booking.getVenue().getOwner().getId();
+
+            if (ownerId.equals(userId)) {
+                bookingService.deleteBooking(bookingId);
+            } else {
+            }
+        }
+        return "redirect:/owner/dashboard";
     }
 
-    
-  
 
 
 
+//
+//    @GetMapping("/owner/dashboard")
+//    public String ownerDashboard(HttpSession session, Model model) {
+//        Long userId = (Long) session.getAttribute("userId");
+//        User owner = (User) session.getAttribute("user");
+//
+//        if (userId == null || owner == null || !owner.getRole().equals("owner")) {
+//            return "redirect:/login";
+//        }
+//
+//        // القاعات المملوكة
+//        List<Venue> ownedVenues = venueRepository.findByOwner(owner);
+//        model.addAttribute("venues", ownedVenues);
+//
+//        // الحجوزات على هذه القاعات
+//        List<Booking> ownerBookings = bookingRepository.findByVenueIn(ownedVenues);
+//        model.addAttribute("bookings", ownerBookings);
+//
+//        // تحميل ملخصات الدردشة (آخر رسالة لكل محادثة)
+//        List<ChatMessage> chats = chatMessageRepository.findChatsByOwnerId(owner.getId());
+//        // قم بتحويلها إلى ملخصات مناسبة للعرض (يمكنك عمل DTO أو Map)
+//        List<Map<String, Object>> chatSummaries = new ArrayList<>();
+//
+//        for (ChatMessage chat : chats) {
+//            Map<String, Object> summary = new HashMap<>();
+//            summary.put("chatId", chat.getChatId());
+//            summary.put("senderName", chat.getSenderName()); // تأكد من تعبئة هذا الحقل
+//            summary.put("lastMessage", chat.getContent());
+//            summary.put("lastTimestamp", chat.getTimestamp());
+//            chatSummaries.add(summary);
+//        }
+//
+//        model.addAttribute("chatSummaries", chatSummaries);
+//
+//        return "ownerDashboard.jsp";
+//    }
     @GetMapping("/owner/dashboard")
     public String ownerDashboard(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
@@ -284,32 +340,19 @@ public class VenueController {
             return "redirect:/login";
         }
 
-        // القاعات المملوكة
         List<Venue> ownedVenues = venueRepository.findByOwner(owner);
         model.addAttribute("venues", ownedVenues);
 
-        // الحجوزات على هذه القاعات
         List<Booking> ownerBookings = bookingRepository.findByVenueIn(ownedVenues);
         model.addAttribute("bookings", ownerBookings);
 
-        // تحميل ملخصات الدردشة (آخر رسالة لكل محادثة)
-        List<ChatMessage> chats = chatMessageRepository.findChatsByOwnerId(owner.getId());
-        // قم بتحويلها إلى ملخصات مناسبة للعرض (يمكنك عمل DTO أو Map)
-        List<Map<String, Object>> chatSummaries = new ArrayList<>();
-
-        for (ChatMessage chat : chats) {
-            Map<String, Object> summary = new HashMap<>();
-            summary.put("chatId", chat.getChatId());
-            summary.put("senderName", chat.getSenderName()); // تأكد من تعبئة هذا الحقل
-            summary.put("lastMessage", chat.getContent());
-            summary.put("lastTimestamp", chat.getTimestamp());
-            chatSummaries.add(summary);
-        }
-
+        // استدعاء غير ثابت عبر الكائن
+        List<ChatSummary> chatSummaries = chatMessageService.getChatSummariesForOwner(owner.getId());
         model.addAttribute("chatSummaries", chatSummaries);
 
         return "ownerDashboard.jsp";
     }
+
 
     
     @GetMapping("user/home")

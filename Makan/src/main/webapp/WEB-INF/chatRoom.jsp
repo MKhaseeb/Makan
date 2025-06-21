@@ -49,7 +49,7 @@
     let stompClient = null;
 
     function connect() {
-        const socket = new SockJS('/ws');  // تأكد من مسار websocket عندك
+        const socket = new SockJS('/chat-websocket');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
@@ -59,6 +59,7 @@
             });
         });
     }
+
 
     function showMessage(message) {
         const chatMessages = document.getElementById('chatMessages');
@@ -99,8 +100,7 @@
             };
             stompClient.send("/app/chat/" + chatId + "/send", {}, JSON.stringify(message));
             input.value = '';
-            content: messageContent,   // your chat message text
-            senderId: currentUserId,   // your current user id
+     
         }
     }
 

@@ -3,6 +3,7 @@ package com.makan.project.services;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,15 @@ public class BookingService {
         }
         return dates;
     }
-
+    public void deleteBooking(Long bookingId) {
+        if (bookingRepository.existsById(bookingId)) {
+            bookingRepository.deleteById(bookingId);
+        }
+        
+        
+    }
+    public Optional<Booking> findById(Long bookingId) {
+        return bookingRepository.findById(bookingId);
+    }
 
 }
