@@ -62,6 +62,7 @@
 
 <body class="min-h-screen flex flex-col">
         <jsp:include page="navbaruser.jsp" />
+       
 <main class="flex-grow">
     <div class="text-center py-12">
 <div class="text-center py-12">
@@ -146,6 +147,77 @@
     </c:forEach>
 </section>
     </div>
+
+
+<!-- الشريط الجانبي للحجوزات -->
+<div id="bookingSidebar"
+     class="hidden fixed top-[5rem] left-0 w-full bg-white z-40 border-t border-b border-gray-200 shadow-md p-6">
+
+  <h2 class="text-2xl font-extrabold mb-6 text-indigo-800 flex items-center gap-2 justify-center">
+    📋 حجوزاتك
+  </h2>
+
+  <c:if test="${not empty bookings}">
+    <div class="flex flex-wrap justify-center gap-6">
+      <c:forEach var="booking" items="${bookings}">
+        <div class="w-72 bg-gradient-to-br from-white to-indigo-50 border border-indigo-200 shadow rounded-2xl p-5 hover:shadow-md transition">
+          <div class="flex flex-col text-right gap-1">
+            <h3 class="text-lg font-bold text-indigo-700">🎉 ${booking.venue.name}</h3>
+            <p class="text-sm text-gray-600">📍 ${booking.venue.city}، ${booking.venue.village}</p>
+            <p class="text-sm text-gray-600">📅 
+              <span class="font-medium text-indigo-900">
+                <fmt:formatDate value="${booking.eventDateAsDate}" pattern="yyyy-MM-dd" />
+              </span>
+            </p>
+            <a href="/halls/view/${booking.venue.id}" target="_blank"
+               class="text-sm mt-2 inline-block text-blue-600 hover:underline">🔎 عرض تفاصيل القاعة</a>
+          </div>
+        </div>
+      </c:forEach>
+    </div>
+  </c:if>
+
+  <c:if test="${empty bookings}">
+    <div class="text-center text-gray-500 mt-8">
+      <span class="text-5xl block">😕</span>
+      <p class="mt-4 text-lg font-semibold">لا توجد حجوزات حالياً</p>
+      <p class="text-sm mt-2">ابدأ بالبحث عن قاعتك المناسبة واحجزها الآن!</p>
+    </div>
+  </c:if>
+</div>
+
+
+<script>
+function toggleSidebar() {
+  const sidebar = document.getElementById('bookingSidebar');
+  sidebar.classList.toggle('hidden');
+}
+
+document.addEventListener('click', function(event) {
+  const sidebar = document.getElementById('bookingSidebar');
+  const button = document.getElementById('toggleSidebarBtn');
+
+  if (!sidebar.contains(event.target) && event.target !== button && !button.contains(event.target)) {
+    sidebar.classList.add('hidden');
+  }
+});
+
+  // إغلاق الشريط عند الضغط خارج الشريط
+  document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('bookingSidebar');
+    const button = document.getElementById('toggleSidebarBtn');
+
+    if (!sidebar.contains(event.target) && event.target !== button && !button.contains(event.target)) {
+      if (!sidebar.classList.contains('translate-x-full')) {
+        sidebar.classList.add('translate-x-full');
+        button.innerHTML = '📂 عرض حجوزاتي';
+      }
+    }
+  });
+</script>
+
+
+
 </main>
 
 <jsp:include page="footer.jsp" />

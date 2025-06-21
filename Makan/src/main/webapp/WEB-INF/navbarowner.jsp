@@ -18,7 +18,10 @@
       <div class="flex items-center gap-6">
       <a href="/owner/dashboard">🏠 الرئيسية</a>
     
-
+<button id="sidebarToggleBtn" onclick="toggleSidebar()" 
+    class="lg:hidden text-indigo-800 hover:text-indigo-600 focus:outline-none text-3xl ml-4">
+    &#9776; <!-- أيقونة الخطوط الثلاثة -->
+</button>
     </div>
     <nav class="flex items-center gap-6 font-medium text-gray-700">
       <form action="/venue/logout" method="post">
