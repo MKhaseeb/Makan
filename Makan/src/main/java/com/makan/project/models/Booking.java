@@ -38,8 +38,19 @@ public class Booking {
     @NotEmpty(message="Notes is required!")
     @Column(name = "notes")
     private String note;
+
+    private String status;
+
     
     
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public List<Rating> getRatings() {
         return ratings;
@@ -100,7 +111,7 @@ public class Booking {
 
     public Booking() {
     }
-    public Booking(LocalDate eventDate, int guestCount, Venue venue, User user, double totalPrice ,  String phoneNumber , String eventType, String note) {
+    public Booking(LocalDate eventDate, int guestCount, Venue venue, User user, double totalPrice ,  String phoneNumber , String eventType, String note , String status) {
         this.eventDate = eventDate;
         this.guestCount = guestCount;
         this.venue = venue;
@@ -108,6 +119,7 @@ public class Booking {
         this.phoneNumber = phoneNumber;
         this.eventType = eventType;
         this.note = note;
+        this.status = status;
     }
     public Long getId() {
         return id;
