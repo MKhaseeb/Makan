@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.makan.project.models.Booking;
+import com.makan.project.models.Rating;
 import com.makan.project.models.User;
 import com.makan.project.models.Venue;
 import com.makan.project.repositories.BookingRepository;
@@ -41,9 +42,7 @@ public class VenueService {
         return venueRepositories.findById(id).orElse(null);
     }
 
-    public List<Venue> allVenue() {
-        return venueRepositories.findAll();
-    }
+
 
     public List<Venue> searchByKeyword(String keyword) {
         return venueRepositories.findByNameContainingIgnoreCaseOrCityContainingIgnoreCase(keyword, keyword);
@@ -131,4 +130,29 @@ public class VenueService {
 //    }
 //    
 //        
+    
+
+    public List<Venue> allVenue() {
+        List<Venue> venues = venueRepositories.findAll();
+        for (Venue venue : venues) {
+            Double avg = calculateAverageRating(venue.getId());
+            venue.setAvgRating(avg);
+        }
+        return venues;
+    }
+    
+    public Double calculateAverageRating(Long venueId) {
+        List<Rating> ratings = ratingRepository.findByVenueId(venueId);
+        if (ratings == null || ratings.isEmpty()) {
+            return 0.0;
+        }
+        double sum = 0;
+        for (Rating r : ratings) {
+            sum += r.getScore();
+        }
+        return sum / ratings.size();
+    }
+
+
+
 }
