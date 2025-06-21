@@ -12,7 +12,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 400vh; /* 16:9 aspect ratio height-based */
+    width:500vh; 
     height: 100vh;
     transform: translate(-50%, -50%);
     pointer-events: none;

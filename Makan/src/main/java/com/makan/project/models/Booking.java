@@ -42,6 +42,7 @@ public class Booking {
     private String status;
 
     
+    private String status; 
     
 
     public String getStatus() {
@@ -183,5 +184,12 @@ public class Booking {
         this.totalPrice = totalPrice;
     }
     
+	  public String getStatus() {
+	        return status;
+	    }
+
+	    public void setStatus(String status) {
+	        this.status = status;
+	    }
 
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,8 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.makan.project.models.ChatSummary;
 import com.makan.project.models.Message;
+import com.makan.project.models.User;
+import com.makan.project.services.ChatMessageService;
 import com.makan.project.services.MessageService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MessageController {
@@ -28,6 +34,8 @@ public class MessageController {
         this.messageService = messageService;
     }
 
+    @Autowired
+    private ChatMessageService chatMessageService;
     @GetMapping("/dashboard")
     public String showDashboard(Model model) {
         boolean hasUnread = messageService.hasUnreadMessages();
@@ -81,5 +89,22 @@ public class MessageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response); // 404 + {"success": false}
         }
     }
+    
+//    
+//    
+//
+//    @GetMapping("/owner/dashboard")
+//    public String ownerDashboard(Model model, HttpSession session) {
+//        User owner = (User) session.getAttribute("user");
+//        if (owner == null) {
+//            return "redirect:/login";
+//        }
+//
+//        List<ChatSummary> chatSummaries = chatMessageService.getChatSummariesForOwner(owner.getId());
+//        model.addAttribute("chatSummaries", chatSummaries);
+//
+//        return "ownerDashboard";  // صفحة JSP الخاصة بلوحة تحكم المالك
+//    }
+
 
 }
