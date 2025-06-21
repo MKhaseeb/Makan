@@ -51,6 +51,12 @@ public class OwnerChatController {
         model.addAttribute("messages", messages);
         model.addAttribute("user", currentUser); // in case you need it in the view
         session.setAttribute("user", currentUser); // make sure ${sessionScope.user} works
+        String[] parts = chatId.split("-");
+        Long part1 = Long.parseLong(parts[0]);
+        Long part2 = Long.parseLong(parts[1]);
+
+        Long receiverId = part1.equals(userId) ? part2 : part1;
+        model.addAttribute("receiverId", receiverId);
 
         return "chatRoom.jsp"; // This must match your JSP file name
     }
