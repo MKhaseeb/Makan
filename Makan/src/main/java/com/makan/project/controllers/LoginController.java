@@ -57,19 +57,25 @@ public class LoginController {
 
 	    User reg = logRegService.register(newUser, result);
 
+	    // تحقق من فشل التسجيل (بسبب خطأ داخل service)
+	    if (reg == null || result.hasErrors()) {
+	        model.addAttribute("newLogin", new LoginUser());
+	        model.addAttribute("registerError", "حدث خطأ أثناء التسجيل. تأكد من صحة البيانات.");
+	        return "login.jsp";
+	    }
+
 	    session.setAttribute("userId", reg.getId());
 	    session.setAttribute("userRole", reg.getRole());
 	    session.setAttribute("user", reg); 
 
-	    // ✅ التوجيه حسب الدور
 	    switch (reg.getRole()) {
-	      case "admin":
-	    	    return "redirect:/homes";  // صفحة المشرف
+	        case "admin":
+	            return "redirect:/homes";
 	        case "owner":
-	            return "redirect:/owner/dashboard";       // صفحة مالك القاعة
+	            return "redirect:/owner/dashboard";
 	        case "user":
 	        default:
-	            return "redirect:/user/home";        // صفحة المستخدم العادي
+	            return "redirect:/user/home";
 	    }
 	}
 

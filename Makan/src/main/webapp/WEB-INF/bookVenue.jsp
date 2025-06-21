@@ -88,7 +88,16 @@
   </script>
 </head>
 
-<body class="bg-gray-100 p-10">
+<body >
+<c:choose>
+    <c:when test="${user.role == 'admin'}">
+    <jsp:include page="navbarlogin.jsp" />
+        </c:when>
+    <c:otherwise>
+        <jsp:include page="navbaruser.jsp" />
+    </c:otherwise>
+</c:choose>
+
 
 <c:if test="${not empty selectedVenue}">
   <div class="p-4 bg-blue-50 rounded mb-4 shadow">
@@ -198,4 +207,5 @@
 </c:if>
 
 </body>
+<jsp:include page="footer.jsp" />
 </html>

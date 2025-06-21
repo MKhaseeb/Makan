@@ -60,10 +60,12 @@
 <jsp:include page="navbarlogin.jsp" />
 
 <main class="flex-grow">
-    <div class="text-center py-10">
-        <h1 class="text-5xl font-bold text-indigo-800">اكتشف قاعة أحلامك</h1>
-        <p class="text-lg text-gray-500 mt-3">✨ قاعات فاخرة للمناسبات الاستثنائية ✨</p>
-    </div>
+<div class="text-center py-10 bg-indigo-100 rounded-3xl mx-6 shadow">
+    <h2 class="text-4xl font-extrabold text-indigo-800">
+        مرحبًا بك <span class="text-indigo-600">${user.firstname}</span>! 👋
+    </h2>
+    <p class="text-lg text-indigo-700 mt-2">يسرنا وجودك في لوحة التحكم، يمكنك هنا إدارة القاعات والطلبات بكل سهولة.</p>
+</div>
 
     <div class="max-w-screen-xl mx-auto px-10">
         <input id="searchInput" type="text" name="search" placeholder="🔍 بحث عن قاعة"
@@ -71,7 +73,7 @@
                oninput="filterVenues()" />
     </div>
 
-    <div class="max-w-screen-xl mx-auto px-10 mt-12 flex flex-col lg:flex-row gap-10">
+<div class="max-w-7xl mx-auto px-6 mt-12 flex flex-col lg:flex-row gap-10">
 
         <!-- الفلاتر -->
         <aside class="w-full lg:w-1/3">
@@ -118,25 +120,26 @@
         </aside>
 
         <!-- القاعات -->
-        <section class="w-full lg:w-2/3 grid md:grid-cols-2 gap-10">
-            <c:forEach var="venue" items="${venues}">
-                <div class="venue-item fade-in-up bg-white rounded-3xl shadow-xl overflow-hidden venue-card">
-                    <a href="/halls/view/${venue.id}" class="block">
-                        <img src="${venue.imageUrl[1]}" alt="${venue.name}" class="w-full h-64 object-cover rounded-t-3xl" />
-                        <div class="p-6 text-right">
-                            <h3 class="text-3xl font-bold text-indigo-700 venue-name mb-3">${venue.name}</h3>
-                            <p class="text-lg text-gray-700 venue-city mb-1">📍 المدينة: ${venue.city}</p>
-                            <p class="text-lg text-gray-700 venue-village mb-3">🏡 القرية: ${venue.village}</p>
-                            <p class="text-base text-gray-600 mb-4">💬 ${venue.description}</p>
-                            <p class="text-green-700 font-semibold text-lg venue-price mb-1">
-                                💰 <fmt:formatNumber value="${venue.pricePerDay}" type="number" maxFractionDigits="0" /> شيكل
-                            </p>
-                            <p class="text-blue-700 text-lg venue-capacity">👥 السعة: ${venue.capacity} شخص</p>
-                        </div>
-                    </a>
+       <section class="w-full flex flex-wrap justify-center gap-10">
+    <c:forEach var="venue" items="${venues}">
+        <div class="venue-item fade-in-up bg-white rounded-3xl shadow-xl overflow-hidden venue-card w-[7cm]">
+            <a href="/halls/view/${venue.id}" class="block">
+                <img src="${venue.imageUrl[0]}" alt="${venue.name}" class="w-full h-40 object-cover rounded-t-3xl" />
+                <div class="p-4 text-right">
+                    <h3 class="text-xl font-bold text-indigo-700 venue-name mb-2">${venue.name}</h3>
+                    <p class="text-sm text-gray-700 venue-city">📍 المدينة: ${venue.city}</p>
+                    <p class="text-sm text-gray-700 venue-village mb-2">🏡 القرية: ${venue.village}</p>
+                    <p class="text-xs text-gray-600 mb-2 truncate">💬 ${venue.description}</p>
+                    <p class="text-green-700 font-semibold text-sm venue-price">
+                        💰 <fmt:formatNumber value="${venue.pricePerDay}" type="number" maxFractionDigits="0" /> شيكل
+                    </p>
+                    <p class="text-blue-700 text-sm venue-capacity">👥 ${venue.capacity} شخص</p>
                 </div>
-            </c:forEach>
-        </section>
+            </a>
+        </div>
+    </c:forEach>
+</section>
+
     </div>
 </main>
 

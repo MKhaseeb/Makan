@@ -111,13 +111,11 @@
       <a href="/homes">🏠 الرئيسية</a>
       <a href="/admin/owners">👤 إدارة المالكين</a>
       <a href="/venue">➕ إضافة قاعة</a>
-      <a href="/message" class="relative">
-        💬 الرسائل
-        <c:if test="${hasUnreadMessages}">
-          <span class="absolute -top-1 -right-2 w-3 h-3 bg-red-600 rounded-full animate-ping"></span>
-          <span class="absolute -top-1 -right-2 w-3 h-3 bg-red-600 rounded-full"></span>
-        </c:if>
-      </a>
+<a href="/message" class="relative inline-block" id="messagesLink">
+    💬 الرسائل
+    <span id="unreadCountBadge" class="absolute -top-2 -right-4 bg-red-600 text-white text-xs font-bold rounded-full px-2 leading-none select-none hidden" style="min-width: 18px; text-align: center;"></span>
+</a>
+
     </div>
 
     <nav class="flex items-center gap-6">
@@ -141,6 +139,31 @@
   function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  async function updateUnreadCount() {
+	    try {
+	      const response = await fetch('/messages/unread-count');
+	      if (!response.ok) throw new Error('Failed to fetch unread count');
+	      const count = await response.json();
+
+	      const badge = document.getElementById('unreadCountBadge');
+	      if (count > 0) {
+	        badge.textContent = count;
+	        badge.classList.remove('hidden');
+	      } else {
+	        badge.classList.add('hidden');
+	      }
+	    } catch (error) {
+	      console.error('Error updating unread count:', error);
+	    }
+	  }
+
+	  // حدث العدّاد فور تحميل الصفحة
+	  document.addEventListener('DOMContentLoaded', () => {
+	    updateUnreadCount();
+
+	    // حدث العدّاد كل 30 ثانية
+	    setInterval(updateUnreadCount, 30000);
+	  });
 </script>
 
 </body>
