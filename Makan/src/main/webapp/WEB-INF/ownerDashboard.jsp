@@ -140,23 +140,19 @@ nav a:focus {
     </style>
 </head>
 <body>
-<header class="sticky top-0 z-50" style="backdrop-filter: blur(20px); background: rgba(255 255 255 / 0.85); border-bottom: 1px solid rgba(0 0 0 / 0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <a href="/owner/dashboard">
-      <h1 id="site-title" class="select-none cursor-default" style="font-size: 2.5rem; font-weight: 900; background: linear-gradient(90deg, #4f46e5, #0ea5e9); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-        قاعتي
-      </h1>
-    </a>
-    <nav class="flex items-center gap-8 font-medium">
-  <form action="/venue/logout" method="post">
-                <button type="submit"
-                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow-lg transition duration-300">
-                    تسجيل الخروج
-                </button>
-            </form>
-    </nav>
-  </div>
-</header>
+<c:choose>
+    <c:when test="${user.role == 'admin'}">
+        <jsp:include page="navbarlogin.jsp" />
+    </c:when>
+    <c:when test="${user.role == 'owner'}">
+        <jsp:include page="navbarowner.jsp" />
+    </c:when>
+    <c:otherwise>
+        <jsp:include page="navbaruser.jsp" />
+    </c:otherwise>
+</c:choose>
+
+
 
 <main class="max-w-7xl mx-auto p-6 space-y-16">
 
@@ -200,9 +196,9 @@ nav a:focus {
 
                             <div class="space-x-4">
                                 <a href="/halls/view/${v.id}" class="text-indigo-700 font-semibold hover:underline">✏️ تعديل</a>
-                                <form action="/venue/delete/${v.id}" method="post" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذه القاعة؟');">
+                          <!--       <form action="/venue/delete/${v.id}" method="post" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذه القاعة؟');">
                                     <button type="submit" class="text-red-600 font-semibold hover:underline">🗑️ حذف</button>
-                                </form>
+                                </form>-->
                             </div>
                         </div>
                     </div>

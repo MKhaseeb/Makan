@@ -38,8 +38,20 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body class="min-h-screen flex flex-col">
+<c:choose>
+    <c:when test="${user.role == 'admin'}">
+        <jsp:include page="navbarlogin.jsp" />
+    </c:when>
+    
+    <c:when test="${user.role == 'owner'}">
+        <jsp:include page="navbarowner.jsp" />
+    </c:when>
+    
+    <c:otherwise>
+        <jsp:include page="navbaruser.jsp" />
+    </c:otherwise>
+</c:choose>
 
-<jsp:include page="navbarlogin.jsp" />
 
 <main class="flex-grow">
 

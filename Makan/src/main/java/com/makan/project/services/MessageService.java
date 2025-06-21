@@ -1,14 +1,14 @@
 package com.makan.project.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.makan.project.models.Message;
 import com.makan.project.repositories.MessageRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MessageService {
@@ -20,20 +20,33 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
+    // ✅ حفظ رسالة جديدة
     public void saveMessage(Message message) {
         messageRepository.save(message);
     }
 
+    // ✅ إرجاع كل الرسائل مرتبة تنازليًا حسب وقت الإرسال
     public List<Message> getAllMessages() {
         return messageRepository.findAllByOrderBySentAtDesc();
     }
 
-
-    public boolean hasUnreadMessages() {
-        // ممكن تضيف خاصية isRead للـ Message وتستخدمها هون
-        return !messageRepository.findAll().isEmpty();
+    // ✅ تعليم كل الرسائل كمقروءة
+    @Transactional
+    public void markAllAsRead() {
+        messageRepository.markAllAsRead();
     }
 
+    // ✅ عدد الرسائل غير المقروءة
+    public int countUnreadMessages() {
+        return messageRepository.countByIsReadFalse();
+    }
+
+    // ✅ هل يوجد رسائل غير مقروءة؟
+    public boolean hasUnreadMessages() {
+        return countUnreadMessages() > 0;
+    }
+
+    // ✅ حذف رسالة بناءً على ID
     public boolean deleteMessage(Long id) {
         Optional<Message> messageOptional = messageRepository.findById(id);
         if (messageOptional.isPresent()) {
@@ -42,10 +55,4 @@ public class MessageService {
         }
         return false;
     }
-
-    public List<Message> findAll() {
-    // Implementation to retrieve all messages
-    return new ArrayList<>(); // Replace with actual logic to fetch messages
-    }
-    
 }

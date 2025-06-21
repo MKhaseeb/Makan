@@ -24,6 +24,7 @@ import com.makan.project.services.ChatMessageService;
 import com.makan.project.services.MessageService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 @Controller
 public class MessageController {
@@ -89,6 +90,24 @@ public class MessageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response); // 404 + {"success": false}
         }
     }
+    
+    @GetMapping("/admin/messages")
+    @Transactional
+    public String showMessages(Model model) {
+        messageService.markAllAsRead();
+        List<Message> messages = messageService.getAllMessages(); // ← استخدم getAllMessages() بدل getAllMessagesSorted()
+        model.addAttribute("messages", messages);
+        return "admin/messages";
+    }
+
+
+    @GetMapping("/messages/unread-count")
+    @ResponseBody
+    public int getUnreadMessagesCount() {
+        return messageService.countUnreadMessages(); // ✅ تم النقل
+    }
+
+
     
 //    
 //    
