@@ -39,6 +39,7 @@ public class Booking {
     @Column(name = "notes")
     private String note;
     
+    private String status; 
     
 
     public List<Rating> getRatings() {
@@ -171,5 +172,12 @@ public class Booking {
         this.totalPrice = totalPrice;
     }
     
+	  public String getStatus() {
+	        return status;
+	    }
+
+	    public void setStatus(String status) {
+	        this.status = status;
+	    }
 
 }
