@@ -84,4 +84,11 @@ public class ChatMessageService {
 
         return summaries;
     }
+    
+    public static String generateChatId(Long userId1, Long userId2) {
+        return userId1 < userId2
+            ? userId1 + "_" + userId2
+            : userId2 + "_" + userId1;
+    }
+
 }
