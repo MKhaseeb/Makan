@@ -41,6 +41,16 @@
 </head>
 
 
+<div class="hidden lg:block fixed right-4 top-2/3 z-40">
+  <div class="bg-gradient-to-br from-yellow-200 via-yellow-100 to-white p-5 rounded-2xl shadow-xl w-45 text-center animate-pulse">
+    <h3 class="text-xl font-extrabold text-indigo-800 mb-2">🎉 عرض خاص!</h3>
+    <p class="text-gray-700 text-sm mb-3">احجز الآن واحصل على خصم لأول 10 عملاء 🎁</p>
+    <a href="/user/home" class="inline-block bg-indigo-600 text-white text-sm px-4 py-2 rounded-full shadow hover:bg-indigo-700 transition duration-300">
+      احجز الآن
+    </a>
+  </div>
+</div>
+
 <body class="min-h-screen flex flex-col">
     <jsp:include page="navbaruser.jsp" />
 
@@ -102,6 +112,7 @@
                     <input type="number" id="minCapacityFilter"
                            class="w-full p-3 rounded-lg border border-gray-300 text-lg" oninput="filterVenues()" />
                 </div>
+            
             </aside>
 
             <!-- القاعات -->
