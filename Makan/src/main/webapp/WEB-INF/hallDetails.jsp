@@ -31,6 +31,21 @@
             padding: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+          /* Add this inside your existing <style> block */
+  #venueMap,
+  #venueMap * {
+    z-index: 0 !important;
+  }
+
+  .leaflet-pane,
+  .leaflet-top,
+  .leaflet-control {
+    z-index: 0 !important;
+  }
+
+  .leaflet-popup {
+    z-index: 1000 !important; /* Allow marker popups if needed */
+  }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />

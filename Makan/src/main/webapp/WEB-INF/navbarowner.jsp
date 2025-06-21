@@ -15,6 +15,11 @@
         قاعتي
       </h1>
     </a>
+      <div class="flex items-center gap-6">
+      <a href="/homes">🏠 الرئيسية</a>
+    
+
+    </div>
     <nav class="flex items-center gap-6 font-medium text-gray-700">
       <form action="/venue/logout" method="post">
         <button type="submit"

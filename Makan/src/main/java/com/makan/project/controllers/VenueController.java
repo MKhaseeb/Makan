@@ -264,13 +264,20 @@ public class VenueController {
         }
 
         // Set user and venue (in case venue only came via hidden input)
-        booking.setUser(logRegService.findUserById(userId));
+        User user = logRegService.findUserById(userId);
+        booking.setUser(user);
         booking.setVenue(venueService.getVenueById(venueId));
 
         // Save the booking
         bookingService.addBooking(booking);
+
+        // ✅ Redirect based on role
+        if ("owner".equals(user.getRole())) {
+            return "redirect:/owner/dashboard";
+        }
+
         return "redirect:/halls/view/" + venueId;
-    }        
+    }
     
     @PostMapping("/booking/delete")
     public String deleteBooking(@RequestParam("bookingId") Long bookingId, HttpSession session) {
