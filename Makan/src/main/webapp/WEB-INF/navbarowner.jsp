@@ -16,7 +16,7 @@
       </h1>
     </a>
       <div class="flex items-center gap-6">
-      <a href="/homes">🏠 الرئيسية</a>
+      <a href="/owner/dashboard">🏠 الرئيسية</a>
     
 
     </div>

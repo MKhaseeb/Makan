@@ -103,7 +103,29 @@
     <jsp:include page="navbarlogin.jsp" />
         </c:when>
     <c:otherwise>
-        <jsp:include page="navbaruser.jsp" />
+<header class="sticky top-0 z-50 backdrop-blur-lg bg-white/70 border-b border-black/10 shadow-md">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="/owner/dashboard">
+      <h1 id="site-title" class="select-none cursor-default text-3xl font-extrabold text-indigo-600">
+        قاعتي
+      </h1>
+    </a>
+      <div class="flex items-center gap-6">
+      <a href="/owner/dashboard">🏠 الرئيسية</a>
+    
+
+    </div>
+    <nav class="flex items-center gap-6 font-medium text-gray-700">
+      <form action="/venue/logout" method="post">
+        <button type="submit"
+                class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-5 rounded-full shadow transition">
+          تسجيل الخروج
+        </button>
+      </form>
+    </nav>
+  </div>
+</header>
+
     </c:otherwise>
 </c:choose>
 
@@ -179,14 +201,6 @@
 
 <div class="text-center">
   <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">احجز الآن</button>
-</div>
-
-<div class="text-center mt-4">
-  <c:if test="${user.role == 'owner'}">
-    <a href="/owner/dashboard" class="inline-block bg-gray-200 text-black px-6 py-2 rounded hover:bg-gray-300">
-      رجوع
-    </a>
-  </c:if>
 </div>
 
 
