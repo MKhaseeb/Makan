@@ -75,7 +75,7 @@
         <!-- Header -->
         <header class="bg-indigo-700 text-white p-5 flex justify-between items-center">
             <h1 class="text-2xl font-extrabold">دردشة مع المستخدم</h1>
-            <a href="/owner/dashboard" class="hover:underline">عودة للوحة التحكم</a>
+            <a href="/user/home" class="hover:underline">عودة للوحة التحكم</a>
         </header>
 
         <!-- Messages Container -->

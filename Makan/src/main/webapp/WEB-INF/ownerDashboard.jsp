@@ -283,7 +283,11 @@ nav a:focus {
                             <td class="truncate max-w-xs" title="${chat.lastMessage}">${chat.lastMessage}</td>
                             <td>${chat.lastTimestamp}</td>
                             <td>
-                                <a href="/owner/chat/${chat.chatId}" class="text-indigo-700 font-semibold hover:underline">الدردشة</a>
+<button type="button"
+        class="text-indigo-700 font-semibold hover:underline"
+        onclick="toggleChatPopup('${chat.chatId}', '${chat.senderName}', '${chat.lastMessage}')">
+    الدردشة
+</button>
                             </td>
                         </tr>
                     </c:forEach>
@@ -307,8 +311,81 @@ nav a:focus {
         <polyline points="6 15 12 9 18 15" />
     </svg>
 </button>
+<!-- نافذة الشات المنبثقة -->
+<div id="chatPopup" class="fixed bottom-24 right-8 w-80 max-h-[70vh] bg-white rounded-2xl shadow-2xl border border-indigo-200 z-50 hidden flex flex-col">
+    <div class="bg-indigo-600 text-white p-4 rounded-t-2xl flex justify-between items-center">
+        <span id="chatPopupUser">المستخدم</span>
+        <button onclick="document.getElementById('chatPopup').classList.add('hidden')">✖</button>
+    </div>
+    <div id="chatPopupMessages" class="overflow-y-auto p-4 space-y-2 text-right text-sm h-96">
+
+        <!-- سيتم تعبئة الرسائل هنا -->
+    </div>
+    <form onsubmit="sendMessage(event)" class="p-3 border-t border-indigo-100 flex gap-2">
+        <input type="text" id="chatInput" placeholder="اكتب رسالة..." required
+               class="flex-1 px-3 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        <button type="submit" class="btn-book px-4 py-1 text-sm">إرسال</button>
+    </form>
+</div>
+
 
 <jsp:include page="footer.jsp" />
+<script>
+    function toggleChatPopup(chatId, senderName, lastMessage) {
+        const popup = document.getElementById('chatPopup');
+        const userSpan = document.getElementById('chatPopupUser');
+        const messagesDiv = document.getElementById('chatPopupMessages');
+        const input = document.getElementById('chatInput');
+
+        // تحديث بيانات
+        popup.classList.remove('hidden');
+        userSpan.textContent = senderName;
+
+        // تفريغ المحادثة القديمة (لتجربة مبسطة، هنا فقط نعرض آخر رسالة كمثال)
+        messagesDiv.innerHTML = '';
+        if (lastMessage) {
+            const msg = document.createElement('div');
+            msg.className = 'bg-indigo-100 text-indigo-800 p-2 rounded-xl inline-block';
+            msg.textContent = lastMessage;
+            messagesDiv.appendChild(msg);
+        }
+
+        // حفظ chatId في عنصر الإدخال
+        input.dataset.chatId = chatId;
+
+        // تمرير إلى أسفل الرسائل
+        setTimeout(() => {
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 100);
+    }
+
+    function sendMessage(event) {
+        event.preventDefault();
+        const input = document.getElementById('chatInput');
+        const chatId = input.dataset.chatId;
+        const message = input.value.trim();
+        if (!message) return;
+
+        // إضافة الرسالة مباشرةً في الواجهة (بدون WebSocket حالياً)
+        const msg = document.createElement('div');
+        msg.className = 'bg-green-100 text-green-800 p-2 rounded-xl max-w-xs self-end';
+        msg.textContent = message;
+        document.getElementById('chatPopupMessages').appendChild(msg);
+
+        // إرسال الرسالة إلى السيرفر (AJAX)
+        fetch('/chat/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+            },
+            body: JSON.stringify({ chatId, message })
+        });
+
+        input.value = '';
+    }
+</script>
+
 
 </body>
 </html>
